@@ -25,8 +25,8 @@ interface CardProps {
 export function Card({ card, onClick, highlight, small }: CardProps) {
   // Fluid sizing: small cards for inactive players, larger for active
   const size = small
-    ? 'w-9 h-12 sm:w-12 sm:h-16 text-xs'
-    : 'w-14 h-20 sm:w-20 sm:h-28 text-xs sm:text-sm';
+    ? 'w-9 h-12 sm:w-10 sm:h-14 text-xs'
+    : 'w-10 h-14 sm:w-14 sm:h-20 text-xs';
 
   return (
     <div

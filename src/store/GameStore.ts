@@ -10,7 +10,7 @@ import { immer } from 'zustand/middleware/immer';
 
 import type { Card, GameActions, GameState, Player } from '../types';
 import { buildDeck, dealCards, flipCard, isBonusCard, cardLabel, shuffle } from '../utils/deck';
-import { evaluateBestHand, doesBeat } from '../utils/evaluator';
+import { evaluateBestHand, doesBeat, compareHands } from '../utils/evaluator';
 
 // ─── Initial State ────────────────────────────────────────────────────────────
 
@@ -84,19 +84,19 @@ export const useGameStore = create<GameState & GameActions>()(
     },
 
     // ── flipNextCard ─────────────────────────────────────────────────────────
-    flipNextCard: () => {
-      const { players, currentPlayerIndex, handToBeat, deck } = get();
+    flipNextCard: (cardIndex: number) => {
+      const { players, currentPlayerIndex, handToBeat, phase } = get();
       const player = players[currentPlayerIndex];
 
-      // Find the first face-down card
-      const faceDownIdx = player.hand.findIndex((c) => !c.faceUp);
-      if (faceDownIdx === -1) return; // No more cards to flip
+      if (phase !== 'PLAYER_TURN') return;
+      if (!player.hand[cardIndex] || player.hand[cardIndex].faceUp) return;
 
       set((state) => {
         const activePlayer = state.players[state.currentPlayerIndex];
-        const card = activePlayer.hand[faceDownIdx];
-        const flipped = flipCard(card);
-        activePlayer.hand[faceDownIdx] = flipped;
+
+        // Flip exactly the card at cardIndex, leave all others untouched
+        const flipped = { ...activePlayer.hand[cardIndex], faceUp: true };
+        activePlayer.hand[cardIndex] = flipped;
 
         // 4-card rule: deal an extra card immediately
         if (isBonusCard(flipped)) {
@@ -125,7 +125,7 @@ export const useGameStore = create<GameState & GameActions>()(
         // Case 1: This player now has the high hand → pass turn immediately
         if (nowBeatsHighHand) {
           state.handToBeat = currentEval;
-          state.handToBeatCards = [...activePlayer.visibleCards];
+          state.handToBeatCards = [...currentEval.bestFive];
           state.turnLog.push(
             `${activePlayer.name} takes the high hand: ${currentEval.label}!`
           );
@@ -183,7 +183,7 @@ export const useGameStore = create<GameState & GameActions>()(
 
           if (nextAlreadyWinning) {
             // Flip all remaining face-down cards for this player
-            nextPlayer.hand = nextPlayer.hand.map((c) => c.faceUp ? c : { ...c, faceUp: true });
+            nextPlayer.hand = nextPlayer.hand.map((c) => ({ ...c, faceUp: true }));
             nextPlayer.visibleCards = nextPlayer.hand;
             nextPlayer.evaluatedHand = evaluateBestHand(nextPlayer.hand);
             nextPlayer.status = 'done';
@@ -255,17 +255,17 @@ export const useGameStore = create<GameState & GameActions>()(
         for (const player of state.players) {
           if (player.status === 'folded') continue;
 
-          const allFaceUp = player.hand.map((c) => ({ ...c, faceUp: true }));
-          const evaluated = evaluateBestHand(allFaceUp);
+          player.hand.forEach((c, i) => { player.hand[i] = { ...c, faceUp: true }; });
+          const evaluated = evaluateBestHand(player.hand);
           player.evaluatedHand = evaluated;
-          player.hand = allFaceUp;
+          player.visibleCards = player.hand;
 
           state.turnLog.push(`${player.name}: ${evaluated.label}`);
 
           if (
+            !winner ||
             evaluated.score > bestScore ||
-            (evaluated.score === bestScore && winner &&
-              evaluated.tiebreakers[0] > (winner.evaluatedHand?.tiebreakers[0] ?? 0))
+            (evaluated.score === bestScore && compareHands(evaluated, winner.evaluatedHand!) > 0)
           ) {
             bestScore = evaluated.score;
             winner = player;

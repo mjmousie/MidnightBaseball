@@ -6,7 +6,6 @@
  * accessing the store directly, to ensure only valid transitions are exposed.
  */
 
-import { useCallback } from 'react';
 import { useGameStore } from '../store/GameStore';
 import type { GamePhase, Player } from '../types';
 import { doesBeat } from '../utils/evaluator';
@@ -29,7 +28,7 @@ interface UseGameReturn {
   // Actions (phase-guarded)
   initGame: (names: string[]) => void;
   startGame: () => void;
-  flipCard: () => void;
+  flipCard: (cardIndex: number) => void;
   passTurn: () => void;
   runShowdown: () => void;
   resetGame: () => void;
@@ -76,42 +75,29 @@ export function useGame(): UseGameReturn {
 
   // ── Phase-guarded actions ─────────────────────────────────────────────────
 
-  const handleInitGame = useCallback(
-    (names: string[]) => {
-      if (phase === 'IDLE' || phase === 'GAME_OVER') {
-        initGame(names);
-      }
-    },
-    [phase, initGame]
-  );
+  const handleInitGame = (names: string[]) => {
+    if (phase === 'IDLE' || phase === 'GAME_OVER') initGame(names);
+  };
 
-  const handleStartGame = useCallback(() => {
-    if (phase === 'DEALING') {
-      startGame();
-    }
-  }, [phase, startGame]);
+  const handleStartGame = () => {
+    if (phase === 'DEALING') startGame();
+  };
 
-  const handleFlipCard = useCallback(() => {
-    if (canFlip) {
-      flipNextCard();
-    }
-  }, [canFlip, flipNextCard]);
+  const handleFlipCard = (cardIndex: number) => {
+    flipNextCard(cardIndex);
+  };
 
-  const handlePassTurn = useCallback(() => {
-    if (canPass) {
-      storePassTurn();
-    }
-  }, [canPass, storePassTurn]);
+  const handlePassTurn = () => {
+    if (canPass) storePassTurn();
+  };
 
-  const handleRunShowdown = useCallback(() => {
-    if (phase === 'SHOWDOWN') {
-      evaluateShowdown();
-    }
-  }, [phase, evaluateShowdown]);
+  const handleRunShowdown = () => {
+    if (phase === 'SHOWDOWN') evaluateShowdown();
+  };
 
-  const handleResetGame = useCallback(() => {
+  const handleResetGame = () => {
     resetGame();
-  }, [resetGame]);
+  };
 
   return {
     phase,

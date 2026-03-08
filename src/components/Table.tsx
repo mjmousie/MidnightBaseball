@@ -127,7 +127,6 @@ export function Table() {
           {players.map((player, idx) => (
             <motion.div
               key={player.id}
-              layout
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.08 }}
@@ -166,7 +165,10 @@ export function Table() {
               )}
             </div>
             <button
-              onClick={flipCard}
+              onClick={() => {
+                const idx = currentPlayer?.hand.findIndex((c) => !c.faceUp) ?? -1;
+                if (idx !== -1) flipCard(idx);
+              }}
               disabled={!canFlip}
               className="flex-shrink-0 bg-blue-600 text-white rounded-lg px-5 py-2.5 text-sm font-semibold disabled:opacity-40 hover:bg-blue-500 disabled:cursor-not-allowed transition"
             >
