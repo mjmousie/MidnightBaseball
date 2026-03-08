@@ -8,8 +8,8 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
-import type { Card, GameActions, GameState, Player } from '../types';
-import { buildDeck, dealCards, flipCard, isBonusCard, cardLabel, shuffle } from '../utils/deck';
+import type { GameActions, GameState, Player } from '../types';
+import { buildDeck, dealCards, isBonusCard, cardLabel, shuffle } from '../utils/deck';
 import { evaluateBestHand, doesBeat, compareHands } from '../utils/evaluator';
 
 // ─── Initial State ────────────────────────────────────────────────────────────
@@ -85,7 +85,7 @@ export const useGameStore = create<GameState & GameActions>()(
 
     // ── flipNextCard ─────────────────────────────────────────────────────────
     flipNextCard: (cardIndex: number) => {
-      const { players, currentPlayerIndex, handToBeat, phase } = get();
+      const { players, currentPlayerIndex, phase } = get();
       const player = players[currentPlayerIndex];
 
       if (phase !== 'PLAYER_TURN') return;
@@ -203,8 +203,6 @@ export const useGameStore = create<GameState & GameActions>()(
 
     // ── passTurn ─────────────────────────────────────────────────────────────
     passTurn: () => {
-      const { players, currentPlayerIndex } = get();
-
       set((state) => {
         // Mark current player as done
         state.players[state.currentPlayerIndex].status = 'done';

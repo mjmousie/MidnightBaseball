@@ -77,7 +77,7 @@ export interface GameState {
 export interface GameActions {
   initGame: (playerNames: string[]) => void;
   startGame: () => void;
-  flipNextCard: () => void;       // Active player flips their next face-down card
+  flipNextCard: (cardIndex: number) => void; // Active player flips a specific face-down card
   passTurn: () => void;           // Move to next player (when hand beats the target)
   evaluateShowdown: () => void;
   resetGame: () => void;
