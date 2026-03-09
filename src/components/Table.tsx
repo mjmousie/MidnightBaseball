@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGame } from '../hooks/useGame';
-import { useGameStore } from '../store/GameStore';
 import { PlayerHand } from './PlayerHand';
-import { Card } from './Card';
 
 // ─── Setup Screen ─────────────────────────────────────────────────────────────
 
-function SetupScreen() {
+function SetupScreen({ onGoHome }: { onGoHome?: () => void }) {
   const { initGame } = useGame();
   const [names, setNames] = useState(['Alice', 'Bob', 'Charlie']);
 
@@ -22,6 +20,9 @@ function SetupScreen() {
   return (
     <div className="min-h-screen bg-green-900 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 w-full max-w-md">
+        {onGoHome && (
+          <button onClick={onGoHome} className="text-slate-400 hover:text-slate-600 text-sm mb-4">← Back</button>
+        )}
         <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-1">🌙 Midnight Baseball</h1>
         <p className="text-slate-500 text-xs sm:text-sm mb-5">2–7 players · Wild: 3s & 9s · Bonus: 4s</p>
 
@@ -73,7 +74,7 @@ function ShowdownTrigger({ runShowdown }: { runShowdown: () => void }) {
 
 // ─── Table ────────────────────────────────────────────────────────────────────
 
-export function Table() {
+export function Table({ onGoHome }: { onGoHome?: () => void }) {
   const {
     phase,
     players,
@@ -89,37 +90,31 @@ export function Table() {
     resetGame,
   } = useGame();
 
-  const handToBeatCards = useGameStore((s) => s.handToBeatCards);
-
-  if (phase === 'IDLE') return <SetupScreen />;
+  if (phase === 'IDLE') return <SetupScreen onGoHome={onGoHome} />;
 
   return (
     <div className="min-h-screen bg-green-900 p-3 sm:p-4 flex flex-col gap-3 sm:gap-4 items-center">
 
       {/* ── Header ── */}
       <div className="flex items-center justify-between w-full max-w-4xl">
-        <h1 className="text-white font-bold text-base sm:text-xl">🌙 Midnight Baseball</h1>
+        <div className="flex items-center gap-3">
+          {onGoHome && (
+            <button onClick={onGoHome} className="text-white/60 hover:text-white text-sm underline">← Home</button>
+          )}
+          <h1 className="text-white font-bold text-base sm:text-xl">🌙 Midnight Baseball</h1>
+        </div>
         <button onClick={resetGame} className="text-white/60 hover:text-white text-sm underline">
           New Game
         </button>
       </div>
 
       {/* ── Hand to Beat ── */}
-      <div className="bg-green-800/60 rounded-xl p-3 sm:p-4 flex items-center gap-3 sm:gap-4 w-full max-w-4xl">
-        <div className="min-w-0 flex-1">
-          <div className="text-green-300 text-xs font-semibold uppercase tracking-wider mb-0.5 sm:mb-1">
-            Hand to Beat
-          </div>
-          <div className="text-white font-bold text-sm sm:text-lg leading-tight">
-            {handToBeatLabel === '—' ? 'None yet — flip to set it' : handToBeatLabel}
-          </div>
+      <div className="bg-green-800/60 rounded-xl p-3 sm:p-4 w-full max-w-4xl">
+        <div className="text-green-300 text-xs font-semibold uppercase tracking-wider mb-0.5 sm:mb-1">
+          Hand to Beat
         </div>
-        <div className="flex gap-1 flex-shrink-0">
-          {handToBeatCards?.map?.((card: any, i: number) => (
-            <div key={`htb-${i}-${card.id}`} className="w-8 sm:w-10">
-              <Card card={card} simple />
-            </div>
-          ))}
+        <div className="text-white font-bold text-sm sm:text-lg leading-tight">
+          {handToBeatLabel === '—' ? 'None yet — flip to set it' : handToBeatLabel}
         </div>
       </div>
 
