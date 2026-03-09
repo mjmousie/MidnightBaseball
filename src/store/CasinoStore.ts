@@ -54,24 +54,19 @@ function determineActive(state: CasinoGameState): CasinoSide | null {
   const bettorHasCards = hasCardsLeft(state, bettor);
   const cpuHasCards = hasCardsLeft(state, cpu);
 
-  // Neither side has cards left — game over handled by checkGameOver
   if (!bettorHasCards && !cpuHasCards) return null;
 
-  // Bettor is out of cards — CPU must flip until they beat bettor or run out
   if (!bettorHasCards) {
     if (!cpuHasCards) return null;
-    // If CPU already beats bettor, game is over — return null
     if (bettorEval && cpuEval && doesBeat(cpuEval, bettorEval)) return null;
     return cpu;
   }
 
-  // CPU is out of cards — bettor must flip until they beat CPU or run out
   if (!cpuHasCards) {
     if (bettorEval && cpuEval && doesBeat(bettorEval, cpuEval)) return null;
     return bettor;
   }
 
-  // Both have cards — whoever is losing must flip
   if (!bettorEval && !cpuEval) return cpu;
   if (!cpuEval) return cpu;
   if (!bettorEval) return bettor;
@@ -85,17 +80,10 @@ function checkGameOver(state: CasinoGameState): boolean {
   const bettorHasCards = hasCardsLeft(state, bettor);
   const cpuHasCards = hasCardsLeft(state, cpu);
 
-  // Game ends when:
-  // (a) both sides are out of cards, OR
-  // (b) one side is out and the other already beats it (no point flipping more)
   const nextActive = determineActive(state);
-  const shouldEnd =
-    (!bettorHasCards && !cpuHasCards) ||
-    nextActive === null;
-
+  const shouldEnd = (!bettorHasCards && !cpuHasCards) || nextActive === null;
   if (!shouldEnd) return false;
 
-  // Flip all remaining cards face-up for final evaluation
   for (const side of [bettor, cpu] as CasinoSide[]) {
     const s = getSide(state, side);
     s.hand = s.hand.map(c => ({ ...c, faceUp: true }));
@@ -107,11 +95,10 @@ function checkGameOver(state: CasinoGameState): boolean {
 
   if (doesBeat(finalBettor, finalCpu)) {
     state.winner = bettor;
-    state.balance += state.totalWagered * 2; // return bet + 1:1 profit
+    state.balance += state.totalWagered * 2;
     state.resultMessage = `🏆 Your side wins with ${finalBettor.label}! You win $${state.totalWagered}!`;
   } else {
     state.winner = cpu;
-    // balance already deducted as bets were placed — nothing to change
     state.resultMessage = `😞 ${cpu === 'banker' ? 'Banker' : 'Player'} wins with ${finalCpu.label}. You lose $${state.totalWagered}.`;
   }
 
@@ -126,9 +113,12 @@ export const useCasinoStore = create<CasinoGameState & CasinoActions>()(
     // ── initCasino ───────────────────────────────────────────────────────────
     initCasino: (bettorSide: CasinoSide, bet: number) => {
       set((state) => {
+        const currentBalance = get().balance;
         Object.assign(state, {
           ...initialState,
-          balance: get().balance - bet, // deduct initial bet immediately
+          banker: { hand: [], evaluatedHand: null },
+          player: { hand: [], evaluatedHand: null },
+          balance: currentBalance - bet,
           phase: 'PLAYING',
           bettorSide,
           initialBet: bet,
@@ -138,15 +128,12 @@ export const useCasinoStore = create<CasinoGameState & CasinoActions>()(
 
         const deck = shuffle(buildDeck());
         let remaining = deck;
-
-        // Deal 7 cards face-down to each side
         const [bankerCards, rest1] = dealCards(remaining, INITIAL_HAND_SIZE);
         const [playerCards, rest2] = dealCards(rest1, INITIAL_HAND_SIZE);
         remaining = rest2;
 
-        // Expose 3 random cards for each side
         const exposeRandom = (cards: Card[]): Card[] => {
-          const indices = shuffle([...Array(INITIAL_HAND_SIZE).keys()]).slice(0, INITIAL_EXPOSE);
+          const indices = shuffle([...Array(cards.length).keys()]).slice(0, INITIAL_EXPOSE);
           return cards.map((c, i) => indices.includes(i) ? { ...c, faceUp: true } : c);
         };
 
@@ -154,33 +141,27 @@ export const useCasinoStore = create<CasinoGameState & CasinoActions>()(
         state.player.hand = exposeRandom(playerCards);
         state.deck = remaining;
 
-        // Evaluate initial hands
         const bankerVisible = state.banker.hand.filter(c => c.faceUp);
         const playerVisible = state.player.hand.filter(c => c.faceUp);
         state.banker.evaluatedHand = bankerVisible.length > 0 ? evaluateBestHand(bankerVisible) : null;
         state.player.evaluatedHand = playerVisible.length > 0 ? evaluateBestHand(playerVisible) : null;
 
-        // Set initial hand to beat
         const bankerEval = state.banker.evaluatedHand;
         const playerEval = state.player.evaluatedHand;
         if (bankerEval && playerEval) {
           if (doesBeat(bankerEval, playerEval)) {
-            state.handToBeat = bankerEval;
-            state.handToBeatSide = 'banker';
+            state.handToBeat = bankerEval; state.handToBeatSide = 'banker';
           } else {
-            state.handToBeat = playerEval;
-            state.handToBeatSide = 'player';
+            state.handToBeat = playerEval; state.handToBeatSide = 'player';
           }
         } else if (bankerEval) {
-          state.handToBeat = bankerEval;
-          state.handToBeatSide = 'banker';
+          state.handToBeat = bankerEval; state.handToBeatSide = 'banker';
         } else if (playerEval) {
-          state.handToBeat = playerEval;
-          state.handToBeatSide = 'player';
+          state.handToBeat = playerEval; state.handToBeatSide = 'player';
         }
 
         state.activeSide = determineActive(state);
-        state.log.push(`Initial cards dealt. ${state.activeSide === bettorSide ? 'Your' : "Dealer's"} turn first.`);
+        state.log.push(`Cards dealt. ${state.activeSide === bettorSide ? 'Your' : "Dealer's"} turn first.`);
       });
     },
 
@@ -195,18 +176,15 @@ export const useCasinoStore = create<CasinoGameState & CasinoActions>()(
         const card = side.hand[cardIndex];
         if (!card || card.faceUp) return;
 
-        // Flip the card
         side.hand[cardIndex] = { ...card, faceUp: true };
         state.log.push(`You flip: ${cardLabel(side.hand[cardIndex])}`);
 
-        // Check for 4 — bettor must decide to pay for bonus card or pay to skip
         if (side.hand[cardIndex].rank === '4') {
           state.pendingWildCard = side.hand[cardIndex];
           state.phase = 'FOUR_PROMPT';
           return;
         }
 
-        // Check for wild (3 or 9) — bettor must pay half bet to continue
         if (side.hand[cardIndex].isWild) {
           state.pendingWildCard = side.hand[cardIndex];
           state.phase = 'WILD_PROMPT';
@@ -216,7 +194,6 @@ export const useCasinoStore = create<CasinoGameState & CasinoActions>()(
         reEvaluate(state, bettor);
         const bettorEval = getSide(state, bettor).evaluatedHand;
 
-        // Update hand to beat
         if (bettorEval) {
           if (!state.handToBeat || doesBeat(bettorEval, state.handToBeat)) {
             state.handToBeat = bettorEval;
@@ -225,8 +202,6 @@ export const useCasinoStore = create<CasinoGameState & CasinoActions>()(
         }
 
         if (checkGameOver(state)) return;
-
-        // Determine whose turn is next
         state.activeSide = determineActive(state);
       });
     },
@@ -241,10 +216,7 @@ export const useCasinoStore = create<CasinoGameState & CasinoActions>()(
         state.log.push(`You pay $${fullBet} to continue with the wild card.`);
         state.pendingWildCard = null;
         state.phase = 'PLAYING';
-
-        const bettor = state.bettorSide!;
-        reEvaluate(state, bettor);
-
+        reEvaluate(state, state.bettorSide!);
         if (checkGameOver(state)) return;
         state.activeSide = determineActive(state);
       });
@@ -254,10 +226,9 @@ export const useCasinoStore = create<CasinoGameState & CasinoActions>()(
     foldHand: () => {
       set((state) => {
         state.winner = oppositeSide(state.bettorSide!);
-        // balance already deducted as bets were placed
-        state.resultMessage = `You folded. You lose $${state.totalWagered}.`;
+        state.resultMessage = `You surrendered. You lose $${state.totalWagered}.`;
         state.phase = 'GAME_OVER';
-        state.log.push('Bettor folded.');
+        state.log.push('Bettor surrendered.');
       });
     },
 
@@ -274,25 +245,8 @@ export const useCasinoStore = create<CasinoGameState & CasinoActions>()(
           const [bonus, rest] = dealCards(state.deck, 1);
           getSide(state, bettor).hand.push(bonus[0]);
           state.deck = rest;
-          state.log.push(`Bonus card dealt face-down.`);
         }
 
-        state.pendingWildCard = null;
-        state.phase = 'PLAYING';
-        reEvaluate(state, bettor);
-        if (checkGameOver(state)) return;
-        state.activeSide = determineActive(state);
-      });
-    },
-
-    // ── payHalfAndContinueWithoutCard ────────────────────────────────────────
-    payHalfAndContinueWithoutCard: () => {
-      set((state) => {
-        if (state.phase !== 'FOUR_PROMPT') return;
-        const bettor = state.bettorSide!;
-        state.totalWagered += state.initialBet;
-        state.balance -= state.initialBet;
-        state.log.push(`You pay $${state.initialBet} and continue without a bonus card.`);
         state.pendingWildCard = null;
         state.phase = 'PLAYING';
         reEvaluate(state, bettor);
@@ -313,17 +267,16 @@ export const useCasinoStore = create<CasinoGameState & CasinoActions>()(
           .map((c, i) => (!c.faceUp ? i : -1))
           .filter(i => i !== -1);
 
-        // If CPU has no cards left, check game over directly
         if (faceDownIndices.length === 0) {
           checkGameOver(state);
           return;
         }
 
-        // Flip a random face-down card
         const randIdx = faceDownIndices[Math.floor(Math.random() * faceDownIndices.length)];
         cpuSide.hand[randIdx] = { ...cpuSide.hand[randIdx], faceUp: true };
         state.log.push(`Dealer flips: ${cardLabel(cpuSide.hand[randIdx])}`);
         state.flipCount += 1;
+
         reEvaluate(state, cpu);
         const cpuEval = getSide(state, cpu).evaluatedHand;
 
@@ -340,8 +293,13 @@ export const useCasinoStore = create<CasinoGameState & CasinoActions>()(
     // ── resetCasino ──────────────────────────────────────────────────────────
     resetCasino: () => {
       set((state) => {
-        const balance = state.balance;
-        Object.assign(state, { ...initialState, balance });
+        const balance = state.balance > 0 ? state.balance : STARTING_BALANCE;
+        Object.assign(state, {
+          ...initialState,
+          banker: { hand: [], evaluatedHand: null },
+          player: { hand: [], evaluatedHand: null },
+          balance,
+        });
       });
     },
   }))

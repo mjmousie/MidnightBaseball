@@ -8,7 +8,7 @@ export function HomeScreen({ onSelectConventional, onSelectCasino }: HomeScreenP
     <div className="min-h-screen bg-green-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="text-6xl mb-4">🌙</div>
+          <div className="text-6xl mb-4">🌙⚾</div>
           <h1 className="text-4xl font-bold text-white mb-2">Midnight Baseball</h1>
           <p className="text-green-300 text-sm">Choose your game</p>
         </div>
@@ -24,10 +24,10 @@ export function HomeScreen({ onSelectConventional, onSelectCasino }: HomeScreenP
               <div>
                 <h2 className="text-white font-bold text-xl mb-1">Conventional</h2>
                 <p className="text-green-300 text-sm leading-relaxed">
-                  Classic Midnight Baseball. 2–7 players take turns flipping cards to beat the current high hand. Wild 3s &amp; 9s, bonus 4s.
+                  Classic Midnight Baseball. 2 to 7 players take turns flipping cards to beat the current high hand. Wild 3s &amp; 9s, Bonus Card on 4s.
                 </p>
                 <div className="mt-3 flex gap-2 flex-wrap">
-                  <span className="text-xs bg-green-700/60 text-green-200 px-2 py-0.5 rounded-full">2–7 Players</span>
+                  <span className="text-xs bg-green-700/60 text-green-200 px-2 py-0.5 rounded-full">2 to 7 Players</span>
                   <span className="text-xs bg-green-700/60 text-green-200 px-2 py-0.5 rounded-full">Wilds: 3s & 9s</span>
                   <span className="text-xs bg-green-700/60 text-green-200 px-2 py-0.5 rounded-full">Bonus: 4s</span>
                 </div>
@@ -45,7 +45,7 @@ export function HomeScreen({ onSelectConventional, onSelectCasino }: HomeScreenP
               <div>
                 <h2 className="text-white font-bold text-xl mb-1">Casino Style</h2>
                 <p className="text-green-300 text-sm leading-relaxed">
-                  Bet on the Banker or Player side. Face the Dealer in a high-stakes battle with wagers on wilds, bonus cards, and 1:1 payouts.
+                  Bet on the Widow or Player side in a high-stakes battle with wagers on wilds, bonus cards, and 1:1 payouts.
                 </p>
                 <div className="mt-3 flex gap-2 flex-wrap">
                   <span className="text-xs bg-emerald-700/60 text-emerald-200 px-2 py-0.5 rounded-full">1 vs Dealer</span>

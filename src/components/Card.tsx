@@ -38,7 +38,7 @@ export function Card({ card, onClick, highlight, simple }: CardProps) {
         }}
         initial={{ rotateY: card.faceUp ? 0 : 180 }}
         animate={{ rotateY: card.faceUp ? 0 : 180 }}
-        transition={{ duration: 0.4, ease: 'easeInOut' }}
+        transition={{ duration: 1, ease: 'easeInOut' }}
       >
         {/* Front */}
         <div
