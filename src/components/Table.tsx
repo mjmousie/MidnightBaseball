@@ -115,9 +115,9 @@ export function Table() {
           </div>
         </div>
         <div className="flex gap-1 flex-shrink-0">
-          {handToBeatCards?.map?.((card: any) => (
-            <div key={card.id} className="w-8 sm:w-10">
-              <Card card={card} />
+          {handToBeatCards?.map?.((card: any, i: number) => (
+            <div key={`htb-${i}-${card.id}`} className="w-8 sm:w-10">
+              <Card card={card} simple />
             </div>
           ))}
         </div>
