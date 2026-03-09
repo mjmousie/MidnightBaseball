@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGame } from '../hooks/useGame';
 import { PlayerHand } from './PlayerHand';
+import { RulesButton } from './RulesModal';
 
 // ─── Setup Screen ─────────────────────────────────────────────────────────────
 
@@ -23,8 +24,8 @@ function SetupScreen({ onGoHome }: { onGoHome?: () => void }) {
         {onGoHome && (
           <button onClick={onGoHome} className="text-slate-400 hover:text-slate-600 text-sm mb-4">← Back</button>
         )}
-        <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-1">🌙⚾ Midnight Baseball</h1>
-        <p className="text-slate-500 text-xs sm:text-sm mb-5">2 to 7 players · Wild Cards: 3s & 9s · Bonus Card: 4s</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-1">🌙 Midnight Baseball</h1>
+        <p className="text-slate-500 text-xs sm:text-sm mb-5">2–7 players · Wild: 3s & 9s · Bonus: 4s</p>
 
         <div className="space-y-2 sm:space-y-3 mb-5">
           {names.map((name, i) => (
@@ -101,11 +102,14 @@ export function Table({ onGoHome }: { onGoHome?: () => void }) {
           {onGoHome && (
             <button onClick={onGoHome} className="text-white/60 hover:text-white text-sm underline">← Home</button>
           )}
-          <h1 className="text-white font-bold text-base sm:text-xl">🌙⚾ Midnight Baseball</h1>
+          <h1 className="text-white font-bold text-base sm:text-xl">🌙 Midnight Baseball</h1>
         </div>
-        <button onClick={resetGame} className="text-white/60 hover:text-white text-sm underline">
-          New Game
-        </button>
+        <div className="flex items-center gap-3">
+          <RulesButton defaultTab="conventional" />
+          <button onClick={resetGame} className="text-white/60 hover:text-white text-sm underline">
+            New Game
+          </button>
+        </div>
       </div>
 
       {/* ── Hand to Beat ── */}

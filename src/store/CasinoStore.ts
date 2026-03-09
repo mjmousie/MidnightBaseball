@@ -96,10 +96,10 @@ function checkGameOver(state: CasinoGameState): boolean {
   if (doesBeat(finalBettor, finalCpu)) {
     state.winner = bettor;
     state.balance += state.totalWagered * 2;
-    state.resultMessage = `🏆 Your side wins with ${finalBettor.label}! You win $${state.totalWagered}!`;
+    state.resultMessage = `🏆 Your side wins with ${finalBettor.label} for $${state.totalWagered}!`;
   } else {
     state.winner = cpu;
-    state.resultMessage = `😞 ${cpu === 'banker' ? 'Banker' : 'Player'} wins with ${finalCpu.label}. You lose $${state.totalWagered}.`;
+    state.resultMessage = `😞 ${cpu === 'banker' ? 'Widow' : 'Player'} wins with ${finalCpu.label} and you lose $${state.totalWagered}.`;
   }
 
   state.phase = 'GAME_OVER';
@@ -123,7 +123,7 @@ export const useCasinoStore = create<CasinoGameState & CasinoActions>()(
           bettorSide,
           initialBet: bet,
           totalWagered: bet,
-          log: [`Game started. You bet $${bet} on the ${bettorSide === 'banker' ? 'Banker' : 'Player'} side.`],
+          log: [`Game started. You bet $${bet} on the ${bettorSide === 'banker' ? 'Widow' : 'Player'} side.`],
         });
 
         const deck = shuffle(buildDeck());

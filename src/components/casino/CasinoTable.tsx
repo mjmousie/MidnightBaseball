@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCasinoStore } from '../../store/CasinoStore';
 import { Card } from '../Card';
+import { RulesButton } from '../RulesModal';
 import type { CasinoSide } from '../../types/casino';
 
 // ─── Setup Screen ─────────────────────────────────────────────────────────────
@@ -18,7 +19,8 @@ function CasinoSetup({ onBack, onDeal }: { onBack: () => void; onDeal: (side: Ca
         <button onClick={onBack} className="text-slate-400 hover:text-slate-600 text-sm block mb-4 text-left">← Back</button>
         <div className="text-4xl mb-2">🎰</div>
         <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-1">Casino Style</h1>
-        <p className="text-slate-500 text-xs sm:text-sm mb-4">Midnight Baseball · Player vs Widow</p>
+        <p className="text-slate-500 text-xs sm:text-sm mb-1">Midnight Baseball · Player vs Widow</p>
+        <div className="mb-4"><RulesButton defaultTab="casino" className="text-emerald-600 hover:text-emerald-800 text-xs underline" /></div>
         <p className="text-emerald-700 font-semibold mb-6">
           Balance: <span className="text-2xl font-bold">${balance.toLocaleString()}</span>
         </p>
@@ -44,7 +46,7 @@ function CasinoSetup({ onBack, onDeal }: { onBack: () => void; onDeal: (side: Ca
                     'flex-1 py-3 rounded-xl font-semibold text-sm border-2 transition-all duration-150',
                     selectedSide === side
                       ? side === 'banker'
-                        ? 'bg-blue-600 border-blue-600 text-white shadow-lg'
+                        ? 'bg-slate-600 border-slate-600 text-white shadow-lg'
                         : 'bg-emerald-600 border-emerald-600 text-white shadow-lg'
                       : 'bg-white border-slate-200 text-slate-600 hover:border-slate-400',
                   ].join(' ')}
@@ -103,13 +105,13 @@ function SideHand({
   return (
     <div className={[
       'rounded-xl p-3 transition-colors duration-1000',
-      isActive && isBettorSide ? 'bg-yellow-50 ring-2 ring-yellow-400 shadow-lg shadow-yellow-100'
-      : isActive ? 'bg-blue-50 ring-2 ring-blue-300'
-      : 'bg-white/60 ring-1 ring-slate-200',
+      isActive && isBettorSide ? 'bg-white/70 ring-2 ring-green-400 shadow-lg shadow-green-200'
+      : isActive ? 'bg-white/70 ring-2 ring-green-300 shadow-lg shadow-green-200'
+      : 'bg-white/60 ring-2 ring-slate-600',
     ].join(' ')}>
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <div className={['w-2 h-2 rounded-full flex-shrink-0', isActive ? 'animate-pulse' : '', isBettorSide ? 'bg-yellow-400' : 'bg-blue-400'].join(' ')} />
+          <div className={['w-2 h-2 rounded-full flex-shrink-0', isActive ? 'animate-pulse' : '', isBettorSide ? 'bg-green-200' : 'bg-slate-400'].join(' ')} />
           <span className="font-semibold text-slate-800 text-sm">{label}</span>
           {isBettorSide && <span className="text-xs bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full">Your Side</span>}
         </div>
@@ -173,11 +175,11 @@ function PayOrSurrenderPrompt({ initialBet, totalWagered, balance, isWild, onPay
         {canAfford && <div className="mb-4" />}
         <div className="flex gap-3">
           <button onClick={onSurrender} className="flex-1 border border-red-200 text-red-600 rounded-lg py-2.5 text-sm font-semibold hover:bg-red-50 transition">
-            Surrender = ${totalWagered}
+            Surrender -${totalWagered}
           </button>
           <button onClick={onPay} disabled={!canAfford}
             className="flex-1 bg-emerald-600 text-white rounded-lg py-2.5 text-sm font-semibold hover:bg-emerald-500 disabled:opacity-30 disabled:cursor-not-allowed transition">
-            Pay ${initialBet}
+            Pay +${initialBet}
           </button>
         </div>
       </motion.div>
@@ -258,7 +260,10 @@ export function CasinoTable({ onBack }: { onBack: () => void }) {
           <button onClick={onBack} className="text-white/60 hover:text-white text-sm underline">← Home</button>
           <h1 className="text-white font-bold text-base sm:text-xl">🎰 Casino Style</h1>
         </div>
-        <div className="text-emerald-300 text-sm font-semibold">Balance: <span className="text-white">${balance.toLocaleString()}</span></div>
+        <div className="flex items-center gap-3">
+          <RulesButton defaultTab="casino" />
+          <div className="text-emerald-300 text-sm font-semibold">Balance: <span className="text-white">${balance.toLocaleString()}</span></div>
+        </div>
       </div>
 
       {/* Current Best Hand */}
@@ -266,7 +271,7 @@ export function CasinoTable({ onBack }: { onBack: () => void }) {
         <div className="text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-1">Current Best Hand</div>
         <div className="text-white font-bold text-sm sm:text-base">
           {handToBeat && !animating
-            ? <>{handToBeat.label} <span className="text-emerald-300 font-normal text-xs">({handToBeatSide === bettorSide ? 'Your Side' : 'Dealer'})</span></>
+            ? <><span className='text-lg'>{handToBeatSide === 'player' ? 'Player' : 'Widow'}</span><span className='text-emerald-300 font-normal text-s ml-2'>({handToBeat.label})</span></>
             : 'None yet'}
         </div>
       </div>
@@ -274,7 +279,7 @@ export function CasinoTable({ onBack }: { onBack: () => void }) {
       {/* Wager info */}
       <div className="flex gap-3 w-full max-w-2xl">
         <div className="flex-1 bg-emerald-800/40 rounded-xl p-3 text-center">
-          <div className="text-emerald-300 text-xs uppercase tracking-wider">Wager / Hand</div>
+          <div className="text-emerald-300 text-xs uppercase tracking-wider">Bet / Hand</div>
           <div className="text-white font-bold text-lg">${initialBet}</div>
         </div>
         <div className="flex-1 bg-emerald-800/40 rounded-xl p-3 text-center">
@@ -298,7 +303,7 @@ export function CasinoTable({ onBack }: { onBack: () => void }) {
       </div>
 
       {/* Action Bar */}
-      <div className="bg-white rounded-xl p-3 sm:p-4 w-full max-w-2xl">
+      <div className="bg-white/60 rounded-xl p-3 sm:p-4 w-full max-w-2xl">
         {(phase === 'PLAYING' || animating) && (
           <div className="flex items-center justify-between">
             <div className="text-sm text-slate-600">
@@ -347,7 +352,7 @@ export function CasinoTable({ onBack }: { onBack: () => void }) {
                 <div className="relative">
                   <button
                     onClick={() => { setEndChoice(endChoice === 'changePick' ? null : 'changePick'); setPendingSide(null); }}
-                    className={['flex-shrink-0 py-2.5 px-3 rounded-lg text-sm font-semibold border-2 transition flex items-center gap-1', endChoice === 'changePick' ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-300 text-slate-700 hover:border-blue-400'].join(' ')}
+                    className={['flex-shrink-0 py-2.5 px-3 rounded-lg text-sm font-semibold border-2 transition flex items-center gap-1', endChoice === 'changePick' ? 'bg-slate-600 border-slate-600 text-white' : 'border-slate-300 text-slate-700 hover:border-slate-400'].join(' ')}
                   >
                     {pendingSide ? (pendingSide === 'banker' ? '🕷️ Widow' : '🧑 Player') : 'Change Pick'}
                     <span className="text-xs opacity-70">{endChoice === 'changePick' ? '▲' : '▼'}</span>
@@ -358,7 +363,7 @@ export function CasinoTable({ onBack }: { onBack: () => void }) {
                         <button
                           key={side}
                           onClick={() => { setPendingSide(side); setEndChoice(null); }}
-                          className={['w-full py-2 px-3 rounded-lg text-sm font-semibold text-left transition', pendingSide === side ? (side === 'banker' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700') : 'hover:bg-slate-100 text-slate-700'].join(' ')}
+                          className={['w-full py-2 px-3 rounded-lg text-sm font-semibold text-left transition', pendingSide === side ? (side === 'banker' ? 'bg-slate-100 text-slate-700' : 'bg-emerald-100 text-emerald-700') : 'hover:bg-slate-100 text-slate-700'].join(' ')}
                         >
                           {side === 'banker' ? '🕷️ Widow' : '🧑 Player'}
                         </button>
@@ -371,7 +376,7 @@ export function CasinoTable({ onBack }: { onBack: () => void }) {
                 <div className="relative">
                   <button
                     onClick={() => { setEndChoice(endChoice === 'changeBet' ? null : 'changeBet'); setPendingBet(null); }}
-                    className={['flex-shrink-0 py-2.5 px-3 rounded-lg text-sm font-semibold border-2 transition flex items-center gap-1', endChoice === 'changeBet' ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-300 text-slate-700 hover:border-blue-400'].join(' ')}
+                    className={['flex-shrink-0 py-2.5 px-3 rounded-lg text-sm font-semibold border-2 transition flex items-center gap-1', endChoice === 'changeBet' ? 'bg-slate-600 border-slate-600 text-white' : 'border-slate-300 text-slate-700 hover:border-slate-400'].join(' ')}
                   >
                     {pendingBet ? `$${pendingBet >= 1000 ? '1K' : pendingBet}` : 'Change Bet'}
                     <span className="text-xs opacity-70">{endChoice === 'changeBet' ? '▲' : '▼'}</span>
@@ -383,7 +388,7 @@ export function CasinoTable({ onBack }: { onBack: () => void }) {
                           key={bet}
                           onClick={() => { if (bet <= balance) { setPendingBet(bet); setEndChoice(null); } }}
                           disabled={bet > balance}
-                          className={['py-1.5 rounded-lg text-sm font-semibold text-center transition', pendingBet === bet ? 'bg-blue-100 text-blue-700' : bet <= balance ? 'hover:bg-slate-100 text-slate-700' : 'text-slate-300 cursor-not-allowed'].join(' ')}
+                          className={['py-1.5 rounded-lg text-sm font-semibold text-center transition', pendingBet === bet ? 'bg-slate-100 text-slate-700' : bet <= balance ? 'hover:bg-slate-100 text-slate-700' : 'text-slate-300 cursor-not-allowed'].join(' ')}
                         >
                           ${bet >= 1000 ? '1K' : bet}
                         </button>
@@ -399,7 +404,7 @@ export function CasinoTable({ onBack }: { onBack: () => void }) {
                     disabled={(pendingBet ?? initialBet) > balance}
                     className="flex-shrink-0 py-2.5 px-3 bg-emerald-600 text-white rounded-lg text-sm font-bold hover:bg-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed transition"
                   >
-                    Play Now
+                    Play Now →
                   </button>
                 )}
 
