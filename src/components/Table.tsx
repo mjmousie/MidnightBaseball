@@ -116,7 +116,9 @@ export function Table() {
         </div>
         <div className="flex gap-1 flex-shrink-0">
           {handToBeatCards?.map?.((card: any) => (
-            <Card key={card.id} card={card} small />
+            <div key={card.id} className="w-8 sm:w-10">
+              <Card card={card} />
+            </div>
           ))}
         </div>
       </div>

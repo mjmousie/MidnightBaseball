@@ -19,24 +19,19 @@ interface CardProps {
   card: CardType;
   onClick?: () => void;
   highlight?: boolean;
-  small?: boolean;
 }
 
-export function Card({ card, onClick, highlight, small }: CardProps) {
-  // Fluid sizing: small cards for inactive players, larger for active
-  const size = small
-    ? 'w-9 h-12 sm:w-10 sm:h-14 text-xs'
-    : 'w-10 h-14 sm:w-14 sm:h-20 text-xs';
-
+export function Card({ card, onClick, highlight }: CardProps) {
   return (
     <div
-      className={`relative ${size} ${onClick ? 'cursor-pointer' : ''}`}
+      className={`relative w-full aspect-[5/7] ${onClick ? 'cursor-pointer' : ''}`}
       style={{ perspective: '600px' }}
       onClick={onClick}
     >
       <motion.div
         className="relative w-full h-full"
         style={{ transformStyle: 'preserve-3d' }}
+        initial={{ rotateY: card.faceUp ? 0 : 180 }}
         animate={{ rotateY: card.faceUp ? 0 : 180 }}
         transition={{ duration: 0.4, ease: 'easeInOut' }}
       >

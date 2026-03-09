@@ -16,14 +16,14 @@ export function PlayerHand({ player, isActive, onFlip }: PlayerHandProps) {
   return (
     <div
       className={[
-        'rounded-xl p-3 sm:p-4 transition-colors duration-300',
+        'rounded-xl p-3 sm:p-4 transition-colors duration-300 min-w-0',
         isActive
           ? 'bg-yellow-50 ring-2 ring-yellow-400 shadow-lg shadow-yellow-100'
           : 'bg-white/60 ring-1 ring-slate-200',
       ].join(' ')}
     >
       {/* Player header */}
-      <div className="flex items-center justify-between mb-2 sm:mb-3">
+      <div className="flex items-center justify-between mb-2 sm:mb-3 min-w-0">
         <div className="flex items-center gap-2 min-w-0">
           <div className={[
             'w-2 h-2 flex-shrink-0 rounded-full',
@@ -50,18 +50,17 @@ export function PlayerHand({ player, isActive, onFlip }: PlayerHandProps) {
         </AnimatePresence>
       </div>
 
-      {/* Cards — each card stays in its fixed slot, only the 3D flip animates */}
-      <div className="overflow-x-auto pb-1 -mx-1 px-1">
-        <div className="flex gap-1 sm:gap-2 flex-nowrap sm:flex-wrap">
-          {player.hand.map((card, idx) => (
-            <div key={card.id} className="flex-shrink-0">
-              <Card
-                card={card}
-                highlight={card.faceUp && bestFiveIds.has(card.id)}
-                onClick={isActive && !card.faceUp ? () => onFlip?.(idx) : undefined}
-              />
-            </div>
-          ))}        </div>
+      {/* Cards — fill the container width evenly, never overflow */}
+      <div className="flex gap-1 min-w-0 w-full">
+        {player.hand.map((card, idx) => (
+          <div key={card.id} className="flex-1 min-w-0">
+            <Card
+              card={card}
+              highlight={card.faceUp && bestFiveIds.has(card.id)}
+              onClick={isActive && !card.faceUp ? () => onFlip?.(idx) : undefined}
+            />
+          </div>
+        ))}
       </div>
 
       <div className="mt-1.5 text-xs text-slate-400">
