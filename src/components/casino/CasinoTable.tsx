@@ -158,7 +158,7 @@ export function CasinoTable({ onBack }: { onBack: () => void }) {
   const {
     phase, banker, player, bettorSide, activeSide,
     handToBeat, handToBeatSide, initialBet, totalWagered,
-    balance, winner, resultMessage, flipCount,
+    balance, resultMessage, flipCount,
     flipBettorCard, payWildAndContinue, foldHand,
     payFourForCard, triggerCpuFlip, resetCasino,
   } = useCasinoStore();
@@ -185,7 +185,6 @@ export function CasinoTable({ onBack }: { onBack: () => void }) {
   if (phase === 'SETUP') return <CasinoSetup onBack={onBack} />;
 
   const bettorIsActive = activeSide === bettorSide;
-  const cpuSide = bettorSide === 'banker' ? 'player' : 'banker';
 
   return (
     <div className="min-h-screen bg-emerald-900 p-3 sm:p-4 flex flex-col gap-3 items-center">

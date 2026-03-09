@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import type { Card } from '../types';
 import type { CasinoActions, CasinoGameState, CasinoSide } from '../types/casino';
-import { buildDeck, dealCards, shuffle, isBonusCard, cardLabel } from '../utils/deck';
+import { buildDeck, dealCards, shuffle, cardLabel } from '../utils/deck';
 import { evaluateBestHand, doesBeat } from '../utils/evaluator';
 
 const INITIAL_HAND_SIZE = 7;
@@ -82,8 +82,6 @@ function determineActive(state: CasinoGameState): CasinoSide | null {
 function checkGameOver(state: CasinoGameState): boolean {
   const bettor = state.bettorSide!;
   const cpu = oppositeSide(bettor);
-  const bettorEval = getSide(state, bettor).evaluatedHand;
-  const cpuEval = getSide(state, cpu).evaluatedHand;
   const bettorHasCards = hasCardsLeft(state, bettor);
   const cpuHasCards = hasCardsLeft(state, cpu);
 
@@ -217,7 +215,6 @@ export const useCasinoStore = create<CasinoGameState & CasinoActions>()(
 
         reEvaluate(state, bettor);
         const bettorEval = getSide(state, bettor).evaluatedHand;
-        const cpuEval = getSide(state, oppositeSide(bettor)).evaluatedHand;
 
         // Update hand to beat
         if (bettorEval) {
