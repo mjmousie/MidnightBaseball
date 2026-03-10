@@ -9,7 +9,6 @@ import type { RowChoice } from '../../types/ironCross';
 const BET_OPTIONS = [5, 10, 25, 50, 100, 200, 500, 1000];
 
 const ROW_LABELS: Record<RowChoice, string> = { top: 'Top Row', right: 'Right Row', mystery: 'Mystery', both: 'Both Revealed' };
-const ROW_DESC:   Record<RowChoice, string> = { top: 'Top·Ctr·Bot', right: 'L·Ctr·R', mystery: 'L·Ctr·Bot', both: 'Top·Right' };
 
 function boardPositionsForRow(row: RowChoice) {
   if (row === 'top')     return ['top', 'center', 'bottom'];
@@ -29,14 +28,14 @@ function IronCrossSetup({ onBack }: { onBack: () => void }) {
         <button onClick={onBack} className="text-slate-400 text-sm block mb-4 text-left">← Back</button>
         <div className="text-4xl mb-2">⛨</div>
         <h1 className="text-2xl font-bold text-slate-800 mb-1">Iron Cross</h1>
-        <p className="text-slate-500 text-sm mb-1">Player vs Dealer · Poker Game</p>
+        <p className="text-slate-500 text-sm mb-1">Player vs Dealer · Board Game</p>
         <div className="mb-4"><RulesButton defaultTab="ironCross" className="text-emerald-700 text-xs underline" /></div>
-        <p className="text-slate-700 font-semibold mb-6">Balance: <span className="text-2xl font-bold">${balance.toLocaleString()}</span></p>
+        <p className="text-emerald-700 font-semibold mb-6">Balance: <span className="text-2xl font-bold">${balance.toLocaleString()}</span></p>
         {balance <= 0 ? (
           <div>
             <div className="text-5xl mb-3">💸</div>
             <p className="text-slate-500 text-sm mb-4">You're out of chips!</p>
-            <button onClick={reset} className="w-full bg-red-700 text-white rounded-lg py-3 font-semibold">Reset to $1,000</button>
+            <button onClick={reset} className="w-full bg-emerald-700 text-white rounded-lg py-3 font-semibold">Reset to $1,000</button>
           </div>
         ) : (
           <>
@@ -46,7 +45,7 @@ function IronCrossSetup({ onBack }: { onBack: () => void }) {
                 const ok = b <= balance;
                 return (
                   <button key={b} onClick={() => ok && initGame(b)} disabled={!ok}
-                    className={['py-2.5 rounded-lg text-sm font-semibold border transition', ok ? 'border-slate-200 text-emerald-700 hover:bg-emerald-700 hover:text-white hover:border-emerald-700' : 'border-slate-100 text-slate-300 cursor-not-allowed'].join(' ')}>
+                    className={['py-2.5 rounded-lg text-sm font-semibold border transition', ok ? 'border-slate-200 text-slate-700 hover:bg-emerald-50 hover:border-emerald-400' : 'border-slate-100 text-slate-300 cursor-not-allowed'].join(' ')}>
                     ${b >= 1000 ? '1K' : b}
                   </button>
                 );
@@ -231,7 +230,7 @@ export function IronCrossTable({ onBack }: { onBack: () => void }) {
 
         {/* Board */}
         <div>
-          <p className="text-white/60 text-[10px] font-semibold uppercase tracking-wider text-center mb-0.5">The Iron Cross</p>
+          <p className="text-white/60 text-[10px] font-semibold uppercase tracking-wider text-center mb-0.5">The Cross</p>
           {visBoard && <BoardCross board={visBoard} highlightRow={phase === 'BACKING' || phase === 'REVEAL' ? chosenRow : null} gameId={gameId} />}
           {chosenRow && (phase === 'BACKING' || phase === 'REVEAL') && (
             <p className="text-yellow-300 text-[10px] font-semibold text-center mt-0.5">
@@ -262,7 +261,7 @@ export function IronCrossTable({ onBack }: { onBack: () => void }) {
                   }}
                 >
                   {c ? (
-                    <div className={['rounded-md transition-all', isSelected ? 'ring-2 ring-red-500 opacity-50 scale-95' : isSelectable ? 'hover:ring-2 hover:ring-red-300' : ''].join(' ')}>
+                    <div className={['rounded-md transition-all', isSelected ? 'ring-2 ring-emerald-500 opacity-50 scale-95' : isSelectable ? 'hover:ring-2 hover:ring-emerald-300' : ''].join(' ')}>
                       <Card card={c} />
                     </div>
                   ) : <Ghost />}
@@ -285,7 +284,7 @@ export function IronCrossTable({ onBack }: { onBack: () => void }) {
                     Tap up to 2 cards to discard and draw replacements.
                   </p>
                   {discardSet.size > 0 && (
-                    <p className="text-red-600 text-xs">{discardSet.size} card{discardSet.size > 1 ? 's' : ''} selected for discard</p>
+                    <p className="text-emerald-600 text-xs">{discardSet.size} card{discardSet.size > 1 ? 's' : ''} selected for discard</p>
                   )}
                   <div className="flex gap-1.5">
                     <button
@@ -297,13 +296,13 @@ export function IronCrossTable({ onBack }: { onBack: () => void }) {
                     <button
                       onClick={() => { drawCards([...discardSet]); setDiscardSet(new Set()); }}
                       disabled={discardSet.size === 0}
-                      className="flex-1 py-2 rounded-lg bg-emerald-700 text-white text-xs font-bold disabled:opacity-40 disabled:cursor-not-allowed transition"
+                      className="flex-1 py-2 rounded-lg bg-emerald-700 text-white text-xs font-bold hover:bg-emerald-600 disabled:opacity-40 disabled:cursor-not-allowed transition"
                     >
                       {discardSet.size === 0 ? 'Draw Cards' : `Draw ${discardSet.size} Card${discardSet.size > 1 ? 's' : ''}`}
                     </button>
                     <button
                       onClick={surrenderDraw}
-                      className="flex-1 py-2 rounded-lg border bg-red-600 border-red-200 text-white text-xs font-semibold"
+                      className="flex-1 py-2 rounded-lg border border-emerald-200 text-emerald-600 text-xs font-semibold hover:bg-emerald-50 transition"
                     >
                       Surrender<br/><span className="text-[9px]">lose ${Math.floor(initialBet / 2)}</span>
                     </button>
@@ -318,24 +317,24 @@ export function IronCrossTable({ onBack }: { onBack: () => void }) {
               <p className="text-slate-600 text-xs font-semibold">Pick your row:</p>
               <div className="flex gap-1.5">
                 <button onClick={() => chooseRow('top')}
-                  className="flex-1 py-2 px-1 rounded-lg border-2 border-slate-200 hover:border-red-500 hover:bg-red-50 text-center transition">
+                  className="flex-1 py-2 px-1 rounded-lg border-2 border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 text-center transition">
                   <p className="font-semibold text-slate-800 text-xs">{cardLabel(board.top)} Row</p>
                 </button>
                 <button onClick={() => chooseRow('right')}
-                  className="flex-1 py-2 px-1 rounded-lg border-2 border-slate-200 hover:border-red-500 hover:bg-red-50 text-center transition">
+                  className="flex-1 py-2 px-1 rounded-lg border-2 border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 text-center transition">
                   <p className="font-semibold text-slate-800 text-xs">{cardLabel(board.right)} Row</p>
                 </button>
                 <button onClick={() => chooseRow('both')}
-                  className="flex-1 py-2 px-1 rounded-lg border-2 border-slate-200 hover:border-red-500 hover:bg-red-50 text-center transition">
+                  className="flex-1 py-2 px-1 rounded-lg border-2 border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 text-center transition">
                   <p className="font-semibold text-slate-800 text-xs">{cardLabel(board.top)}&amp;{cardLabel(board.right)}</p>
                 </button>
                 <button onClick={() => chooseRow('mystery')}
-                  className="flex-1 py-2 px-1 rounded-lg border-2 border-slate-200 hover:border-red-500 hover:bg-red-50 text-center transition">
+                  className="flex-1 py-2 px-1 rounded-lg border-2 border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 text-center transition">
                   <p className="font-semibold text-slate-800 text-xs">Mystery</p>
                 </button>
               </div>
               <button onClick={surrender}
-                className="w-full py-1.5 border border-red-200 text-red-600 rounded-lg text-xs font-semibold hover:bg-red-50 transition">
+                className="w-full py-1.5 border border-emerald-200 text-emerald-600 rounded-lg text-xs font-semibold hover:bg-emerald-50 transition">
                 Surrender — forfeit ${initialBet}
               </button>
             </>
@@ -351,13 +350,13 @@ export function IronCrossTable({ onBack }: { onBack: () => void }) {
                   const ok = amt === 0 || amt <= balance;
                   return (
                     <button key={amt} onClick={() => ok && setPendingBackup(amt)} disabled={!ok}
-                      className={['py-1.5 rounded-lg text-xs font-semibold border transition', pendingBackup === amt ? 'bg-emerald-500 border-emerald-500 text-white' : ok ? 'border-slate-200 text-slate-700 hover:border-emerald-400' : 'border-slate-100 text-slate-300 cursor-not-allowed'].join(' ')}>
+                      className={['py-1.5 rounded-lg text-xs font-semibold border transition', pendingBackup === amt ? 'bg-emerald-700 border-emerald-700 text-white' : ok ? 'border-slate-200 text-slate-700 hover:border-emerald-400' : 'border-slate-100 text-slate-300 cursor-not-allowed'].join(' ')}>
                       {amt === 0 ? 'Skip' : `$${amt >= 1000 ? '1K' : amt}`}
                     </button>
                   );
                 })}
               </div>
-              <button onClick={() => placeBackupBet(pendingBackup)} className="w-full bg-emerald-600 text-white rounded-lg py-2 font-bold text-s transition">
+              <button onClick={() => placeBackupBet(pendingBackup)} className="w-full bg-emerald-700 text-white rounded-lg py-2 font-bold text-s hover:bg-emerald-600 transition">
                 Confirm Total Bet: ${initialBet + pendingBackup}
               </button>
             </>
@@ -371,24 +370,24 @@ export function IronCrossTable({ onBack }: { onBack: () => void }) {
                 <>
                   <div className="text-sm font-bold text-slate-800">{resultMessage}</div>
                   <div className="grid grid-cols-2 gap-2">
-                    <div className={['rounded-lg p-2 text-center', winner === 'player' ? 'bg-emerald-50 ring-2 ring-emerald-400' : winner === 'tie' ? 'bg-slate-50 ring-2 ring-slate-500' : 'ring-2 ring-slate-50'].join(' ')}>
+                    <div className={['rounded-lg p-2 text-center', winner === 'player' ? 'bg-emerald-50 ring-2 ring-emerald-400' : winner === 'tie' ? 'bg-yellow-50 ring-2 ring-yellow-300' : 'bg-slate-50'].join(' ')}>
                       <p className="text-[10px] text-slate-500">Your Hand · {chosenRow ? ROW_LABELS[chosenRow] : ''}</p>
                       <p className="font-bold text-slate-800 text-xs">{playerBestHand?.label ?? '—'}</p>
                     </div>
-                    <div className={['rounded-lg p-2 text-center', winner === 'dealer' ? 'bg-red-50 ring-2 ring-red-400' : winner === 'tie' ? 'bg-slate-50 ring-2 ring-slate-50' : 'ring-2 ring-slate-50'].join(' ')}>
+                    <div className={['rounded-lg p-2 text-center', winner === 'dealer' ? 'bg-emerald-50 ring-2 ring-emerald-400' : winner === 'tie' ? 'bg-yellow-50 ring-2 ring-yellow-300' : 'bg-slate-50'].join(' ')}>
                       <p className="text-[10px] text-slate-500">Dealer · {dealerChosenRow ? ROW_LABELS[dealerChosenRow] : ''}</p>
                       <p className="font-bold text-slate-800 text-xs">{dealerBestHand?.label ?? '—'}</p>
                     </div>
                   </div>
                   {balance <= 0 ? (
                     <div className="flex gap-2">
-                      <button onClick={reset} className="flex-1 bg-red-700 text-white rounded-lg py-2 text-sm font-semibold">Reset to $1,000</button>
+                      <button onClick={reset} className="flex-1 bg-emerald-700 text-white rounded-lg py-2 text-sm font-semibold">Reset to $1,000</button>
                       <button onClick={onBack} className="border border-slate-200 text-slate-600 rounded-lg px-3 py-2 text-sm font-semibold">Home</button>
                     </div>
                   ) : (
                     <div className="flex items-center gap-2">
                       <button onClick={() => startNew(initialBet)} disabled={initialBet > balance}
-                        className="py-2 px-3 bg-emerald-700 text-white rounded-lg text-sm font-semibold disabled:opacity-40 transition">
+                        className="py-2 px-3 bg-emerald-700 text-white rounded-lg text-sm font-semibold hover:bg-emerald-600 disabled:opacity-40 transition">
                         Replay ${initialBet}
                       </button>
                       <div className="relative">
@@ -425,7 +424,7 @@ export function IronCrossTable({ onBack }: { onBack: () => void }) {
               <div className="text-sm font-bold text-slate-800">{resultMessage}</div>
               <div className="flex gap-2">
                 <button onClick={() => startNew(initialBet)} disabled={initialBet > balance}
-                  className="flex-1 bg-red-700 text-white rounded-lg py-2 text-sm font-semibold hover:bg-red-600 disabled:opacity-40 transition">
+                  className="flex-1 bg-emerald-700 text-white rounded-lg py-2 text-sm font-semibold hover:bg-emerald-600 disabled:opacity-40 transition">
                   Replay ${initialBet}
                 </button>
                 <button onClick={resetGame} className="flex-1 border border-slate-200 text-slate-600 rounded-lg py-2 text-sm font-semibold hover:bg-slate-50 transition">New Bet</button>
