@@ -210,7 +210,7 @@ export function IronCrossTable({ onBack }: { onBack: () => void }) {
   const {
     phase, gameId, playerHand, dealerHand, board,
     chosenRow, dealerChosenRow,
-    initialBet, bonusBet, bonusWin, backupBet, totalWagered,
+    initialBet, bonusBet, bonusWin, backupBet,
     playerBestHand, dealerBestHand,
     winner, resultMessage,
     surrender, surrenderDraw, confirmRowAndBet, resetGame, initGame,
