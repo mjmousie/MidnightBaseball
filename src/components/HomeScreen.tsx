@@ -48,7 +48,7 @@ export function HomeScreen({ onSelectCasino, onSelectIronCross }: HomeScreenProp
             <div className="flex items-start gap-4">
               <div className="text-4xl text-white">⛨</div>
               <div>
-                <h2 className="text-white font-bold text-xl mb-1">The Cross</h2>
+                <h2 className="text-white font-bold text-xl mb-1">Iron Cross</h2>
                 <p className="text-green-300 text-sm leading-relaxed">
                   5 cards each plus a cross-shaped board. Choose a row, back up your bet, then battle the Dealer for the best hand.
                 </p>

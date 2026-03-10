@@ -119,7 +119,7 @@ export const useIronCrossStore = create<IronCrossGameState & IronCrossActions>()
         const refund = Math.floor(state.initialBet / 2);
         if (refund > 0) useBalanceStore.getState().add(refund);
         state.winner = 'dealer';
-        state.resultMessage = `You surrendered. You lose $${state.initialBet - refund}.`;
+        state.resultMessage = `You surrendered.`;
         state.phase = 'GAME_OVER';
       });
     },
@@ -144,12 +144,18 @@ export const useIronCrossStore = create<IronCrossGameState & IronCrossActions>()
         const remaining = [...state.deck];
         const newHand = state.playerHand.map((card, i) => {
           if (indicesToDiscard.includes(i) && remaining.length > 0) {
-            return { ...remaining.shift()!, faceUp: true };
+            return { ...remaining.shift()!, faceUp: false };
           }
           return card;
         });
         state.playerHand = newHand;
         state.phase = 'CHOOSING';
+      });
+    },
+
+    revealDrawnCards: () => {
+      set((state) => {
+        state.playerHand = state.playerHand.map(c => ({ ...c, faceUp: true }));
       });
     },
 
@@ -170,7 +176,7 @@ export const useIronCrossStore = create<IronCrossGameState & IronCrossActions>()
     surrender: () => {
       set((state) => {
         state.winner = 'dealer';
-        state.resultMessage = `You surrendered. You lose $${state.initialBet}.`;
+        state.resultMessage = `You surrendered.`;
         state.phase = 'GAME_OVER';
       });
     },

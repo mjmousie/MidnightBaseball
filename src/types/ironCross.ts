@@ -41,6 +41,7 @@ export interface IronCrossActions {
   flipTopCard: () => void;
   flipRightCard: () => void;
   drawCards: (indicesToDiscard: number[]) => void;
+  revealDrawnCards: () => void;
   standPat: () => void;
   surrenderDraw: () => void;
   chooseRow: (row: RowChoice) => void;

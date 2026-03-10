@@ -23,7 +23,7 @@ function IronCrossSetup({ onBack }: { onBack: () => void }) {
   const { balance, reset } = useBalanceStore();
   const { initGame } = useIronCrossStore();
   return (
-    <div className="min-h-screen bg-emerald-800 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-emerald-950 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm text-center">
         <button onClick={onBack} className="text-slate-400 text-sm block mb-4 text-left">← Back</button>
         <div className="text-4xl mb-2">⛨</div>
@@ -115,7 +115,7 @@ export function IronCrossTable({ onBack }: { onBack: () => void }) {
     playerBestHand, dealerBestHand,
     winner, resultMessage,
     chooseRow, surrender, surrenderDraw, placeBackupBet, resetGame, initGame,
-    drawCards, standPat, flipTopCard, flipRightCard,
+    drawCards, standPat, flipTopCard, flipRightCard, revealDrawnCards,
   } = useIronCrossStore();
 
   const [pendingBackup, setPendingBackup] = useState(0);
@@ -192,7 +192,7 @@ export function IronCrossTable({ onBack }: { onBack: () => void }) {
   const playerSlots: (any|null)[] = [null, ...playerHand, null];
 
   return (
-    <div className="min-h-screen bg-emerald-800 p-3 flex flex-col items-center">
+    <div className="min-h-screen bg-emerald-950 p-3 flex flex-col items-center">
       <div className="w-full max-w-sm flex flex-col gap-2">
 
         {/* Header */}
@@ -294,7 +294,11 @@ export function IronCrossTable({ onBack }: { onBack: () => void }) {
                       Stand Pat
                     </button>
                     <button
-                      onClick={() => { drawCards([...discardSet]); setDiscardSet(new Set()); }}
+                      onClick={() => {
+                        drawCards([...discardSet]);
+                        setDiscardSet(new Set());
+                        setTimeout(() => revealDrawnCards(), 150);
+                      }}
                       disabled={discardSet.size === 0}
                       className="flex-1 py-2 rounded-lg bg-emerald-700 text-white text-xs font-bold hover:bg-emerald-600 disabled:opacity-40 disabled:cursor-not-allowed transition"
                     >
@@ -357,7 +361,7 @@ export function IronCrossTable({ onBack }: { onBack: () => void }) {
                 })}
               </div>
               <button onClick={() => placeBackupBet(pendingBackup)} className="w-full bg-emerald-700 text-white rounded-lg py-2 font-bold text-s hover:bg-emerald-600 transition">
-                Confirm Total Bet: ${initialBet + pendingBackup}
+                Confirm Bet Total: ${initialBet + pendingBackup}
               </button>
             </>
           )}
@@ -387,7 +391,7 @@ export function IronCrossTable({ onBack }: { onBack: () => void }) {
                   ) : (
                     <div className="flex items-center gap-2">
                       <button onClick={() => startNew(initialBet)} disabled={initialBet > balance}
-                        className="py-2 px-3 bg-emerald-700 text-white rounded-lg text-sm font-semibold hover:bg-emerald-600 disabled:opacity-40 transition">
+                        className="py-2 px-3 bg-emerald-700 text-white rounded-lg text-md font-semibold hover:bg-emerald-600 disabled:opacity-40 transition">
                         Replay ${initialBet}
                       </button>
                       <div className="relative">
