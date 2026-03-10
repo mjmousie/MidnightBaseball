@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { HomeScreen } from './components/HomeScreen';
-import { Table } from './components/Table';
 import { CasinoTable } from './components/casino/CasinoTable';
 import { IronCrossTable } from './components/ironCross/IronCrossTable';
 
