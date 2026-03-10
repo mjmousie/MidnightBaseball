@@ -5,7 +5,7 @@ const SUIT_COLOR: Record<string, string> = {
   hearts:   'text-red-500',
   diamonds: 'text-blue-500',
   spades:   'text-slate-900',
-  clubs:    'text-green-600',
+  clubs:    'text-emerald-500',
 };
 
 const SUIT_SYMBOL: Record<string, string> = {

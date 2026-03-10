@@ -25,7 +25,7 @@ export interface CasinoGameState {
   handToBeatSide: CasinoSide | null;
   initialBet: number;
   totalWagered: number;
-  balance: number;
+  // balance lives in shared balanceStore
   pendingWildCard: Card | null;
   winner: CasinoSide | null;
   resultMessage: string;

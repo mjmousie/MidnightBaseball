@@ -2,14 +2,13 @@ import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import type { Card } from '../types';
 import type { CasinoActions, CasinoGameState, CasinoSide } from '../types/casino';
+import { useBalanceStore } from './balanceStore';
 import { buildDeck, dealCards, shuffle, cardLabel } from '../utils/deck';
 import { evaluateBestHand, doesBeat } from '../utils/evaluator';
 
 const INITIAL_HAND_SIZE = 7;
 const INITIAL_EXPOSE = 3;
-const STARTING_BALANCE = 1000;
-
-const initialState: CasinoGameState = {
+const initialState: Omit<CasinoGameState, 'balance'> = {
   phase: 'SETUP',
   deck: [],
   banker: { hand: [], evaluatedHand: null },
@@ -20,7 +19,6 @@ const initialState: CasinoGameState = {
   handToBeatSide: null,
   initialBet: 0,
   totalWagered: 0,
-  balance: STARTING_BALANCE,
   pendingWildCard: null,
   winner: null,
   resultMessage: '',
@@ -95,11 +93,11 @@ function checkGameOver(state: CasinoGameState): boolean {
 
   if (doesBeat(finalBettor, finalCpu)) {
     state.winner = bettor;
-    state.balance += state.totalWagered * 2;
-    state.resultMessage = `🏆 Your side wins with ${finalBettor.label} for $${state.totalWagered}!`;
+    useBalanceStore.getState().add(state.totalWagered * 2);
+    state.resultMessage = `🏆 ${bettor === 'banker' ? 'Widow' : 'Player'} wins with ${finalBettor.label}!`;
   } else {
     state.winner = cpu;
-    state.resultMessage = `😞 ${cpu === 'banker' ? 'Widow' : 'Player'} wins with ${finalCpu.label} and you lose $${state.totalWagered}.`;
+    state.resultMessage = `😞 ${cpu === 'banker' ? 'Widow' : 'Player'} wins with ${finalCpu.label}.`;
   }
 
   state.phase = 'GAME_OVER';
@@ -107,18 +105,17 @@ function checkGameOver(state: CasinoGameState): boolean {
 }
 
 export const useCasinoStore = create<CasinoGameState & CasinoActions>()(
-  immer((set, get) => ({
+  immer((set) => ({
     ...initialState,
 
     // ── initCasino ───────────────────────────────────────────────────────────
     initCasino: (bettorSide: CasinoSide, bet: number) => {
+      useBalanceStore.getState().deduct(bet);
       set((state) => {
-        const currentBalance = get().balance;
         Object.assign(state, {
           ...initialState,
           banker: { hand: [], evaluatedHand: null },
           player: { hand: [], evaluatedHand: null },
-          balance: currentBalance - bet,
           phase: 'PLAYING',
           bettorSide,
           initialBet: bet,
@@ -212,7 +209,7 @@ export const useCasinoStore = create<CasinoGameState & CasinoActions>()(
         if (state.phase !== 'WILD_PROMPT') return;
         const fullBet = state.initialBet;
         state.totalWagered += fullBet;
-        state.balance -= fullBet;
+        useBalanceStore.getState().deduct(fullBet);
         state.log.push(`You pay $${fullBet} to continue with the wild card.`);
         state.pendingWildCard = null;
         state.phase = 'PLAYING';
@@ -238,7 +235,7 @@ export const useCasinoStore = create<CasinoGameState & CasinoActions>()(
         if (state.phase !== 'FOUR_PROMPT') return;
         const bettor = state.bettorSide!;
         state.totalWagered += state.initialBet;
-        state.balance -= state.initialBet;
+        useBalanceStore.getState().deduct(state.initialBet);
         state.log.push(`You pay $${state.initialBet} for a bonus card.`);
 
         if (state.deck.length > 0) {
@@ -292,13 +289,13 @@ export const useCasinoStore = create<CasinoGameState & CasinoActions>()(
 
     // ── resetCasino ──────────────────────────────────────────────────────────
     resetCasino: () => {
+      const { balance, reset } = useBalanceStore.getState();
+      if (balance <= 0) reset();
       set((state) => {
-        const balance = state.balance > 0 ? state.balance : STARTING_BALANCE;
         Object.assign(state, {
           ...initialState,
           banker: { hand: [], evaluatedHand: null },
           player: { hand: [], evaluatedHand: null },
-          balance,
         });
       });
     },

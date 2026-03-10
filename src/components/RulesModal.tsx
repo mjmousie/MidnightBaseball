@@ -1,51 +1,39 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-type RulesTab = 'core' | 'conventional' | 'casino';
+type RulesTab = 'casino' | 'ironCross';
 
 function RulesContent({ tab }: { tab: RulesTab }) {
-  if (tab === 'core') return (
+
+  if (tab === 'ironCross') return (
     <div className="flex flex-col gap-4 text-slate-700 text-sm leading-relaxed">
       <div>
-        <h3 className="font-bold text-slate-900 mb-1">🌙 What is Midnight Baseball?</h3>
-        <p>Midnight Baseball is a poker-style card game where players are dealt 7 cards face-down and take turns flipping them one at a time, trying to build the best 5-card poker hand.</p>
+        <h3 className="font-bold text-slate-900 mb-1">✝️ The Setup</h3>
+        <p>Place your initial bet. You and the Dealer each receive <strong>5 cards</strong>. Your cards are face up. The Dealer's cards are face down. A cross-shaped board of <strong>5 cards</strong> is dealt in the center.</p>
       </div>
       <div>
-        <h3 className="font-bold text-slate-900 mb-1">🃏 Wild Cards</h3>
-        <p><strong>3s and 9s are wild</strong> — they can represent any card to make the best possible hand. When you flip a 3 or 9, you must pay the pot to keep it as a wild, or fold your hand.</p>
+        <h3 className="font-bold text-slate-900 mb-1">🃏 The Board</h3>
+        <p>The board is arranged like a cross: one card on top, three across the middle (left, center, right), and one on the bottom. Two cards are immediately revealed: the <strong>top</strong> and the <strong>right</strong>.</p>
       </div>
       <div>
-        <h3 className="font-bold text-slate-900 mb-1">4️⃣ The Four</h3>
-        <p>When you flip a <strong>4</strong>, you may pay the pot to receive an extra face-down card dealt to your hand, or pass.</p>
+        <h3 className="font-bold text-slate-900 mb-1">🎯 Choose Your Row</h3>
+        <p><strong>Top Row</strong>: use Top · Center · Bottom cards with your hand.</p>
+        <p><strong>Right Row</strong>: use Left · Center · Right cards with your hand.</p>
+        <p><strong>Mystery</strong>: use Left · Center · Bottom — neither card has been revealed yet!</p>
+        <p>Or <strong>Surrender</strong> and forfeit your initial bet.</p>
       </div>
       <div>
-        <h3 className="font-bold text-slate-900 mb-1">🏆 Hand Rankings</h3>
-        <p>Standard poker rankings apply: Royal Flush, Straight Flush, Four of a Kind, Full House, Flush, Straight, Three of a Kind, Two Pair, One Pair, High Card.</p>
+        <h3 className="font-bold text-slate-900 mb-1">💰 Back Up Bet</h3>
+        <p>After choosing a row, you may place a Back Up Bet from $0 up to <strong>4× your initial bet</strong>, making the maximum total wager 5× your initial bet.</p>
+      </div>
+      <div>
+        <h3 className="font-bold text-slate-900 mb-1">🏁 The Reveal</h3>
+        <p>The Dealer's cards and all remaining board cards flip over. You make the best 5-card hand from your 5 cards + your chosen 3 board cards (best 5 of 8). The Dealer automatically picks whichever row gives <em>them</em> the best hand. Best hand wins 1:1 on total wagered. Ties return your bet.</p>
       </div>
     </div>
   );
 
-  if (tab === 'conventional') return (
-    <div className="flex flex-col gap-4 text-slate-700 text-sm leading-relaxed">
-      <div>
-        <h3 className="font-bold text-slate-900 mb-1">👥 Players</h3>
-        <p>2–7 players. Each player is dealt 7 cards face-down. A minimum bet (ante) starts the pot.</p>
-      </div>
-      <div>
-        <h3 className="font-bold text-slate-900 mb-1">▶️ How a Turn Works</h3>
-        <p>On your turn, flip one face-down card. If your best visible hand <strong>beats the current high hand</strong>, the action moves to the next player. If it doesn't, you keep flipping until you beat it or run out of cards.</p>
-      </div>
-      <div>
-        <h3 className="font-bold text-slate-900 mb-1">🃏 Wilds & 4s</h3>
-        <p>Flipping a <strong>3 or 9</strong>: pay the current pot value to keep it as wild, or fold. Flipping a <strong>4</strong>: pay the pot to receive one bonus card face-down, or decline.</p>
-      </div>
-      <div>
-        <h3 className="font-bold text-slate-900 mb-1">🏁 Winning</h3>
-        <p>After all players have gone, the player with the best 5-card hand wins the pot. Ties split the pot.</p>
-      </div>
-    </div>
-  );
-
+  // casino
   return (
     <div className="flex flex-col gap-4 text-slate-700 text-sm leading-relaxed">
       <div>
@@ -68,14 +56,13 @@ function RulesContent({ tab }: { tab: RulesTab }) {
   );
 }
 
-export function RulesButton({ defaultTab = 'core', className = '' }: { defaultTab?: RulesTab; className?: string }) {
+export function RulesButton({ defaultTab = 'casino', className = '' }: { defaultTab?: RulesTab; className?: string }) {
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<RulesTab>(defaultTab);
 
   const tabs: { id: RulesTab; label: string }[] = [
-    { id: 'core', label: 'Core Rules' },
-    { id: 'conventional', label: 'Conventional' },
-    { id: 'casino', label: 'Casino Style' },
+    { id: 'casino', label: 'Midnight Baseball' },
+    { id: 'ironCross', label: 'The Cross' },
   ];
 
   return (

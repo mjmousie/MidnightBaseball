@@ -1,44 +1,26 @@
+import { RulesButton } from './RulesModal';
+
 interface HomeScreenProps {
   onSelectConventional: () => void;
   onSelectCasino: () => void;
+  onSelectIronCross: () => void;
 }
 
-import { RulesButton } from './RulesModal';
-
-export function HomeScreen({ onSelectConventional, onSelectCasino }: HomeScreenProps) {
+export function HomeScreen({ onSelectConventional, onSelectCasino, onSelectIronCross }: HomeScreenProps) {
   return (
-    <div className="min-h-screen bg-green-900 flex items-center justify-center p-4">
+    <div className="min-h-full bg-green-900 flex items-center justify-center p-4 py-40">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="text-6xl mb-4">🌙</div>
-          <h1 className="text-4xl font-bold text-white mb-2">Midnight Baseball</h1>
-          <p className="text-green-300 text-sm">Choose your game</p>
+          <div className="text-xl mb-4">❤️♠️♦️♣️</div>
+          <h1 className="text-4xl font-bold text-white mb-2">Moose's Room</h1>
+          <p className="text-green-300 text-sm">Moose's favorite backroom poker games, now online.</p>
           <div className="mt-3">
-            <RulesButton defaultTab="core" className="text-green-300 hover:text-white text-sm underline" />
+            <RulesButton defaultTab="casino" className="text-green-300 hover:text-white text-sm underline" />
           </div>
         </div>
 
         <div className="flex flex-col gap-4">
           {/* Conventional */}
-          <button
-            onClick={onSelectConventional}
-            className="group bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/40 rounded-2xl p-6 text-left transition-all duration-200"
-          >
-            <div className="flex items-start gap-4">
-              <div className="text-4xl">🃏</div>
-              <div>
-                <h2 className="text-white font-bold text-xl mb-1">Conventional</h2>
-                <p className="text-green-300 text-sm leading-relaxed">
-                  Classic Midnight Baseball. 2–7 players take turns flipping cards to beat the current high hand. Wild 3s &amp; 9s, bonus 4s.
-                </p>
-                <div className="mt-3 flex gap-2 flex-wrap">
-                  <span className="text-xs bg-green-700/60 text-green-200 px-2 py-0.5 rounded-full">2–7 Players</span>
-                  <span className="text-xs bg-green-700/60 text-green-200 px-2 py-0.5 rounded-full">Wilds: 3s & 9s</span>
-                  <span className="text-xs bg-green-700/60 text-green-200 px-2 py-0.5 rounded-full">Bonus: 4s</span>
-                </div>
-              </div>
-            </div>
-          </button>
 
           {/* Casino Style */}
           <button
@@ -46,16 +28,37 @@ export function HomeScreen({ onSelectConventional, onSelectCasino }: HomeScreenP
             className="group bg-emerald-800/40 hover:bg-emerald-700/50 border border-emerald-500/30 hover:border-emerald-400/60 rounded-2xl p-6 text-left transition-all duration-200"
           >
             <div className="flex items-start gap-4">
-              <div className="text-4xl">🎰</div>
+              <div className="text-4xl">⚾</div>
               <div>
-                <h2 className="text-white font-bold text-xl mb-1">Casino Style</h2>
+                <h2 className="text-white font-bold text-xl mb-1">Midnight Baseball</h2>
                 <p className="text-green-300 text-sm leading-relaxed">
-                  Bet on the Player or Widow. Face the Dealer in a high-stakes battle with wagers on wilds, bonus cards, and 1:1 payouts.
+                  Bet on the Banker or Player side. Face the Dealer in a high-stakes battle with wagers on wilds, bonus cards, and 1:1 payouts.
                 </p>
                 <div className="mt-3 flex gap-2 flex-wrap">
                   <span className="text-xs bg-emerald-700/60 text-emerald-200 px-2 py-0.5 rounded-full">1 vs Dealer</span>
                   <span className="text-xs bg-emerald-700/60 text-emerald-200 px-2 py-0.5 rounded-full">Betting</span>
                   <span className="text-xs bg-emerald-700/60 text-emerald-200 px-2 py-0.5 rounded-full">1:1 Payout</span>
+                </div>
+              </div>
+            </div>
+          </button>
+
+          {/* Iron Cross */}
+          <button
+            onClick={onSelectIronCross}
+            className="group bg-emerald-800/40 hover:bg-emerald-700/50 border border-emerald-500/30 hover:border-emerald-400/60 rounded-2xl p-6 text-left transition-all duration-200"
+          >
+            <div className="flex items-start gap-4">
+              <div className="text-4xl text-white">⛨</div>
+              <div>
+                <h2 className="text-white font-bold text-xl mb-1">The Cross</h2>
+                <p className="text-green-300 text-sm leading-relaxed">
+                  5 cards each plus a cross-shaped board. Choose a row, back up your bet, then battle the Dealer for the best hand.
+                </p>
+                <div className="mt-3 flex gap-2 flex-wrap">
+                  <span className="text-xs bg-emerald-800/60 text-emerald-200 px-2 py-0.5 rounded-full">1 vs Dealer</span>
+                  <span className="text-xs bg-emerald-800/60 text-emerald-200 px-2 py-0.5 rounded-full">Board Game</span>
+                  <span className="text-xs bg-emerald-800/60 text-emerald-200 px-2 py-0.5 rounded-full">Back Up Bet</span>
                 </div>
               </div>
             </div>
