@@ -36,6 +36,7 @@ export interface IronCrossGameState {
   dealerBestHand: EvaluatedHand | null;
   winner: 'player' | 'dealer' | 'tie' | null;
   resultMessage: string;
+  pendingPayout: number;
 }
 
 export interface IronCrossActions {
@@ -47,6 +48,7 @@ export interface IronCrossActions {
   standPat: () => void;
   surrenderDraw: () => void;
   confirmRowAndBet: (row: RowChoice, backupBet: number) => void;
+  applyPayout: () => void;
   chooseRow: (row: RowChoice) => void;
   surrender: () => void;
   placeBackupBet: (amount: number) => void;

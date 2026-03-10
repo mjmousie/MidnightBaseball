@@ -216,7 +216,7 @@ export function RulesButton({ defaultTab = 'core', className = '' }: { defaultTa
 
   const tabs: { id: RulesTab; label: string }[] = [
     { id: 'core', label: 'Hand Strength' },
-    { id: 'casino', label: 'Casino Style' },
+    { id: 'casino', label: 'Midnight Baseball' },
     { id: 'ironCross', label: 'Iron Cross' },
   ];
 

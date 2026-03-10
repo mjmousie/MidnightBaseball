@@ -94,10 +94,10 @@ function checkGameOver(state: CasinoGameState): boolean {
   if (doesBeat(finalBettor, finalCpu)) {
     state.winner = bettor;
     useBalanceStore.getState().add(state.totalWagered * 2);
-    state.resultMessage = `🏆 ${bettor === 'banker' ? 'Widow' : 'Player'} wins with ${finalBettor.label}!`;
+    state.resultMessage = `${bettor === 'banker' ? 'Widow' : 'Player'} wins with ${finalBettor.label}!`;
   } else {
     state.winner = cpu;
-    state.resultMessage = `😞 ${cpu === 'banker' ? 'Widow' : 'Player'} wins with ${finalCpu.label}.`;
+    state.resultMessage = `${cpu === 'banker' ? 'Widow' : 'Player'} wins with ${finalCpu.label}.`;
   }
 
   state.phase = 'GAME_OVER';

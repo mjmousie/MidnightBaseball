@@ -89,26 +89,28 @@ function evaluateAndPay(state: IronCrossGameState, row: RowChoice, backupBet: nu
 
   // Bonus bet payout
   const mult = BONUS_PAYOUTS[state.playerBestHand!.rank] ?? 0;
+  let payout = 0;
   if (state.bonusBet > 0 && mult > 0) {
     state.bonusWin = state.bonusBet * mult;
-    useBalanceStore.getState().add(state.bonusBet * (mult + 1));
+    payout += state.bonusBet * (mult + 1);
   }
 
   const p = state.playerBestHand!;
   const d = state.dealerBestHand!;
   if (doesBeat(p, d)) {
     state.winner = 'player';
-    useBalanceStore.getState().add(state.totalWagered * 2);
+    payout += state.totalWagered * 2;
     state.resultMessage = `You win $${state.totalWagered} with ${p.label}!`;
   } else if (doesBeat(d, p)) {
     state.winner = 'dealer';
-    state.resultMessage = `You lose $${state.totalWagered}, Dealer has ${d.label}.`;
+    state.resultMessage = `Dealer wins with ${d.label}. You lose.`;
   } else {
     state.winner = 'tie';
-    useBalanceStore.getState().add(state.totalWagered);
-    state.resultMessage = `Tie! Both have ${p.label}. Bet returned.`;
+    payout += state.totalWagered;
+    state.resultMessage = `Tie! Both have ${p.label}.`;
   }
 
+  state.pendingPayout = payout;
   state.phase = 'REVEAL';
 }
 
@@ -132,6 +134,7 @@ const initialState: IronCrossGameState = {
   dealerBestHand: null,
   winner: null,
   resultMessage: '',
+  pendingPayout: 0,
 };
 
 // ── Store ─────────────────────────────────────────────────────────────────────
@@ -212,6 +215,15 @@ export const useIronCrossStore = create<IronCrossGameState & IronCrossActions>()
     confirmRowAndBet: (row: RowChoice, backupBet: number) => {
       if (backupBet > 0) useBalanceStore.getState().deduct(backupBet);
       set((state) => { evaluateAndPay(state, row, backupBet); });
+    },
+
+    applyPayout: () => {
+      set((state) => {
+        if (state.pendingPayout > 0) {
+          useBalanceStore.getState().add(state.pendingPayout);
+          state.pendingPayout = 0;
+        }
+      });
     },
 
     chooseRow: (row: RowChoice) => {
