@@ -105,7 +105,7 @@ export function Table({ onGoHome }: { onGoHome?: () => void }) {
           <h1 className="text-white font-bold text-base sm:text-xl">🌙 Midnight Baseball</h1>
         </div>
         <div className="flex items-center gap-3">
-          <RulesButton defaultTab="conventional" />
+          <RulesButton defaultTab="casino" />
           <button onClick={resetGame} className="text-white/60 hover:text-white text-sm underline">
             New Game
           </button>

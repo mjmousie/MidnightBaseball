@@ -19,8 +19,6 @@ export function HomeScreen({ onSelectCasino, onSelectIronCross }: HomeScreenProp
         </div>
 
         <div className="flex flex-col gap-4">
-          {/* Conventional */}
-
           {/* Casino Style */}
           <button
             onClick={onSelectCasino}
