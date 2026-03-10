@@ -28,6 +28,8 @@ export interface IronCrossGameState {
   chosenRow: RowChoice | null;
   dealerChosenRow: RowChoice | null;
   initialBet: number;
+  bonusBet: number;
+  bonusWin: number;
   backupBet: number;
   totalWagered: number;
   playerBestHand: EvaluatedHand | null;
@@ -37,13 +39,14 @@ export interface IronCrossGameState {
 }
 
 export interface IronCrossActions {
-  initGame: (bet: number) => void;
+  initGame: (bet: number, bonusBet: number) => void;
   flipTopCard: () => void;
   flipRightCard: () => void;
   drawCards: (indicesToDiscard: number[]) => void;
   revealDrawnCards: () => void;
   standPat: () => void;
   surrenderDraw: () => void;
+  confirmRowAndBet: (row: RowChoice, backupBet: number) => void;
   chooseRow: (row: RowChoice) => void;
   surrender: () => void;
   placeBackupBet: (amount: number) => void;
