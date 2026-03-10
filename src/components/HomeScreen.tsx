@@ -1,12 +1,11 @@
 import { RulesButton } from './RulesModal';
 
 interface HomeScreenProps {
-  onSelectConventional: () => void;
   onSelectCasino: () => void;
   onSelectIronCross: () => void;
 }
 
-export function HomeScreen({ onSelectConventional, onSelectCasino, onSelectIronCross }: HomeScreenProps) {
+export function HomeScreen({ onSelectCasino, onSelectIronCross }: HomeScreenProps) {
   return (
     <div className="min-h-full bg-green-900 flex items-center justify-center p-4 py-40">
       <div className="w-full max-w-md">

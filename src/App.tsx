@@ -15,7 +15,6 @@ export default function App() {
 
   return (
     <HomeScreen
-      onSelectConventional={() => setMode('conventional')}
       onSelectCasino={() => setMode('casino')}
       onSelectIronCross={() => setMode('ironCross')}
     />
