@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useCasinoStore } from '../../store/CasinoStore';
 import { useBalanceStore } from '../../store/balanceStore';
 import { Card } from '../Card';
-import { RulesButton } from '../RulesModal';
 import type { CasinoSide } from '../../types/casino';
 import { AppHeader } from '../AppHeader';
 

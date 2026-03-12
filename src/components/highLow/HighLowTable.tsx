@@ -100,7 +100,7 @@ function Confetti() {
 }
 
 // ── Deck visual ───────────────────────────────────────────────────────────────
-function DeckStack({ count }: { count: number }) {
+function DeckStack({ count: _ }: { count: number }) {
   return (
     <div className="flex flex-col items-center gap-1.5 mb-8">
       <div className="relative" style={{ width:78, height:111 }}>
@@ -123,9 +123,7 @@ export function HighLowTable({ onBack }: { onBack: () => void }) {
   const [bet, setBet]               = useState(0);
   const [deck, setDeck]             = useState<Card[]>([]);
   const [streak, setStreak]         = useState(0);
-  const [streakLog, setStreakLog]   = useState<boolean[]>([]);
   const [selection, setSelection]   = useState<'higher' | 'lower' | null>(null);
-
   const [leftCardKey, setLeftCardKey] = useState(0);
   const [leftCard, setLeftCard]                 = useState<Card | null>(null);
   const [leftFaceUp, setLeftFaceUp]             = useState(false);
@@ -210,7 +208,7 @@ export function HighLowTable({ onBack }: { onBack: () => void }) {
     if (betAmt < 1 || betAmt > 100 || betAmt > balance) return;
     deduct(betAmt);
     setBet(betAmt);
-    setStreak(0); setStreakLog([]); setSelection(null);
+    setStreak(0); setSelection(null);
     setRightCard(null); setRightGreenBorder(false); setRightRedBorder(false);
     setPhase('DEALING');
 
@@ -249,8 +247,6 @@ export function HighLowTable({ onBack }: { onBack: () => void }) {
       const correct  = (capturedSel === 'higher' && rightVal > leftVal) ||
                        (capturedSel === 'lower'  && rightVal < leftVal);
 
-      setStreakLog(prev => [...prev, correct]);
-
       if (correct) {
         playDing();
         setRightGreenBorder(true);
@@ -275,12 +271,12 @@ export function HighLowTable({ onBack }: { onBack: () => void }) {
   const cashOut = () => {
     add(Math.round(bet * MULTIPLIERS[streak]));
     setLeftCard(null); setRightCard(null);
-    setStreak(0); setStreakLog([]); setBetInput(''); setPhase('SETUP');
+    setStreak(0); setBetInput(''); setPhase('SETUP');
   };
   const keepGoing    = () => setPhase('CHOOSING');
   const resetToSetup = () => {
     setLeftCard(null); setRightCard(null);
-    setStreak(0); setStreakLog([]); setBetInput(''); setPhase('SETUP');
+    setStreak(0); setBetInput(''); setPhase('SETUP');
   };
 
   const betVal        = parseInt(betInput);
