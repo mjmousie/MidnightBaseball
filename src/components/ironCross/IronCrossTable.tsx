@@ -5,6 +5,7 @@ import { Card } from '../Card';
 import { RulesButton, BonusPayoutsButton } from '../RulesModal';
 import { cardLabel } from '../../utils/deck';
 import type { RowChoice } from '../../types/ironCross';
+import { AppHeader } from '../AppHeader';
 
 const BET_OPTIONS = [5, 25, 100, 500];
 const BONUS_OPTIONS = [0, 5, 10];
@@ -50,20 +51,13 @@ function IronCrossSetup({ onBack }: { onBack: () => void }) {
   const startGame = () => initGame(chosenBet, bonusBet);
 
   return (
-    <div className="h-dvh bg-slate-900 flex flex-col overflow-hidden">
-      <div className="flex-shrink-0 flex items-center justify-between px-4 py-3 border-b border-emerald-800/50">
-        <button onClick={onBack} className="text-white/60 hover:text-white text-sm underline">← Home</button>
-        <h1 className="text-white font-bold text-sm">Iron Cross</h1>
-        <div className="py-0.5 px-4 bg-slate-600 rounded-3xl border-[1px] border-slate-700">
-          <span className="text-white text-s font-semibold">Balance: <span className="text-white">${balance.toLocaleString()}</span></span>
-          </div>
-      </div>
+    <div className="h-dvh bg-slate-800 flex flex-col overflow-hidden">
+      <AppHeader onHome={onBack} rulesTab="ironCross" payoutsTab="bonusPayouts" />
       <div className="flex-1 min-h-0 flex items-center justify-center px-4 overflow-y-auto">
         <div className="bg-slate-800 rounded-2xl shadow-2xl p-5 w-full max-w-sm text-center">
-          <div className="text-4xl mb-2 text-orange-600">🕀</div>
+          <div className="text-4xl mb-2 text-slate-400">♰</div>
           <h2 className="text-xl font-bold text-slate-200 mb-1">Iron Cross</h2>
           <p className="text-slate-200 text-xs mb-1">Player vs Dealer · Board Game</p>
-          <div className="mb-4"><RulesButton defaultTab="ironCross" className="text-orange-700 text-xs underline" /></div>
 
         {balance <= 0 ? (
           <div>
@@ -93,7 +87,7 @@ function IronCrossSetup({ onBack }: { onBack: () => void }) {
           </>
         ) : (
           <>
-            <p className="text-slate-200 font-semibold mb-1">Initial Bet: <span className="text-orange-400">${chosenBet}</span></p>
+            <p className="text-slate-200 font-semibold my-6">Bet <span className="text-orange-400">${chosenBet}</span></p>
             <div className="flex items-center justify-between mb-3">
               <p className="text-xs font-semibold text-slate-300 uppercase tracking-wider">Add a Bonus Bet?</p>
               <BonusPayoutsButton className="text-orange-500 text-sm underline hover:text-orange-600" />
@@ -114,8 +108,8 @@ function IronCrossSetup({ onBack }: { onBack: () => void }) {
                 ← Back
               </button>
               <button onClick={startGame}
-                className="flex-1 bg-orange-600 text-white rounded-lg py-2 text-sm font-semibold hover:bg-orange-500 transition">
-                Deal{bonusBet > 0 ? `: $${chosenBet + bonusBet}` : `: $${chosenBet}`}
+                className="flex-1 bg-orange-600 text-white rounded-lg py-2 text-md font-semibold hover:bg-orange-500 transition">
+                Play now for {bonusBet > 0 ? `$${chosenBet + bonusBet}` : `$${chosenBet}`}
               </button>
             </div>
           </>
@@ -329,23 +323,11 @@ export function IronCrossTable({ onBack }: { onBack: () => void }) {
     <div className="h-dvh bg-slate-800 flex flex-col overflow-hidden">
 
       {/* Header */}
-      <div className="flex-shrink-0 flex items-center justify-between px-3 py-2 border-b border-emerald-800/50">
-        <div className="flex items-center gap-2">
-          <button onClick={onBack} className="text-white/60 hover:text-white text-sm underline">← Home</button>
-          <h1 className="text-white font-bold text-sm">Iron Cross</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          <RulesButton defaultTab="ironCross" />
-          <BonusPayoutsButton />
-          <div className="py-0.5 px-4 bg-slate-600 rounded-3xl border-[1px] border-slate-700">
-          <span className="text-white text-s font-semibold">Balance: <span className="text-white">${balance.toLocaleString()}</span></span>
-          </div>
-        </div>
-      </div>
+      <AppHeader onHome={onBack} rulesTab="ironCross" payoutsTab="bonusPayouts" />
 
       {/* Cards area — fills remaining height above bottom sheet */}
       <div className="flex-1 min-h-0 overflow-hidden px-2 py-1 flex flex-col items-center">
-        <div className="w-full max-w-[80%] flex flex-col gap-0.5 h-full mt-2">
+        <div className="w-full max-w-[80%] justify-center flex flex-col gap-0.5 h-full mt-2">
 
         {/* Dealer */}
         <HandRow label="Dealer" slots={dealerSlots} gameId={gameId} />
@@ -442,7 +424,7 @@ export function IronCrossTable({ onBack }: { onBack: () => void }) {
                   )}
                   <div className="flex gap-1.5">
                     <button onClick={() => { standPat(); setDiscardSet(new Set()); }}
-                      className="flex-1 py-2 rounded-lg border-2 border-orange-400 text-slate-200 text-md font-semibold hover:bg-orange-500 hover:text-slate-200 transition">
+                      className="flex-1 py-2 rounded-lg border-2 border-orange-600 text-slate-200 text-md font-semibold hover:bg-orange-500 hover:text-slate-200 transition">
                       Stand Pat
                     </button>
                     <button
@@ -588,7 +570,7 @@ export function IronCrossTable({ onBack }: { onBack: () => void }) {
                         onClick={() => launchGame(replayBonus.bet, replayBonus.bonus)}
                         disabled={replayBonus.bet > balance}
                         className="w-full bg-orange-700 text-white rounded-lg py-2 font-bold text-s hover:bg-orange-600 disabled:opacity-40 transition">
-                        Deal: ${replayBonus.bet + replayBonus.bonus}
+                        Play now for ${replayBonus.bet + replayBonus.bonus}
                       </button>
                     </div>
                   ) : balance <= 0 ? (
@@ -640,39 +622,38 @@ export function IronCrossTable({ onBack }: { onBack: () => void }) {
           {/* ── GAME_OVER (surrender) ── */}
           {phase === 'GAME_OVER' && (
             <div className="flex flex-col gap-2">
-              <div className="text-sm font-bold text-slate-800">{resultMessage}</div>
+              <div className="text-sm font-semibold text-center text-slate-300">{resultMessage}</div>
               {replayBonus ? (
                 <div className="flex flex-col gap-2 border-t border-slate-100 pt-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-slate-200">Next game: <span className="text-emerald-700">${replayBonus.bet}</span></span>
+                    <span className="text-sm font-semibold text-slate-200">Next game: <span className="text-orange-500">${replayBonus.bet}</span></span>
                     <button onClick={() => setReplayBonus(null)} className="text-[10px] text-slate-300 underline hover:text-slate-600">Cancel</button>
                   </div>
-                  <div className="flex items-center justify-between"><p className="text-xs font-semibold text-slate-200">Add a Bonus Bet?</p><BonusPayoutsButton className="text-orange-400 text-xs underline hover:text-orange-400" /></div>
+                  <div className="flex items-center justify-between"><p className="text-sm font-semibold text-slate-200">Add a Bonus Bet?</p><BonusPayoutsButton className="text-orange-500 text-xs underline hover:text-orange-500" /></div>
                   <div className="grid grid-cols-3 gap-1.5">
                     {BONUS_OPTIONS.filter(b => b === 0 || b <= balance - replayBonus.bet).map(b => (
                       <button key={b}
                         onClick={() => setReplayBonus(prev => prev ? { ...prev, bonus: b } : prev)}
-                        className={['py-1.5 rounded-lg text-xs font-semibold border transition',
+                        className={['py-1.5 rounded-lg text-sm font-semibold border transition',
                           replayBonus.bonus === b
-                            ? 'bg-emerald-700 border-emerald-700 text-white'
-                            : 'border-slate-200 text-slate-700 hover:bg-emerald-50 hover:border-emerald-400'].join(' ')}>
+                            ? 'bg-orange-600 border-orange-600 text-slate-200'
+                            : 'border-orange-600 text-slate-200 hover:border-orange-500'].join(' ')}>
                         {b === 0 ? 'No Thanks' : `$${b}`}
                       </button>
                     ))}
                   </div>
                   <button onClick={() => launchGame(replayBonus.bet, replayBonus.bonus)} disabled={replayBonus.bet > balance}
-                    className="w-full bg-emerald-700 text-white rounded-lg py-2 font-bold text-sm hover:bg-emerald-600 disabled:opacity-40 transition">
-                    Deal — ${replayBonus.bet + replayBonus.bonus}
+                    className="w-full bg-orange-600 text-slate-200 rounded-lg py-2 font-semibold text-md hover:bg-orange-500 disabled:opacity-40 transition">
+                    Play again for ${replayBonus.bet + replayBonus.bonus}
                   </button>
                 </div>
               ) : (
                 <div className="flex gap-2">
                   <button onClick={() => beginReplay(initialBet)} disabled={initialBet > balance}
-                    className="flex-1 bg-emerald-700 text-white rounded-lg py-2 text-sm font-semibold hover:bg-emerald-600 disabled:opacity-40 transition">
+                    className="flex-1 bg-orange-600 text-white rounded-lg py-2 text-md font-semibold hover:bg-orange-500 disabled:opacity-40 transition">
                     Replay ${initialBet}
                   </button>
-                  <button onClick={resetGame} className="flex-1 border border-slate-200 text-slate-600 rounded-lg py-2 text-sm font-semibold hover:bg-slate-50 transition">New Bet</button>
-                  <button onClick={onBack} className="border border-slate-200 text-slate-600 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-slate-50 transition">Home</button>
+                  <button onClick={resetGame} className="flex-1 border border-orange-600 text-slate-300 rounded-lg py-2 text-md font-semibold transition">New Bet</button>
                 </div>
               )}
             </div>

@@ -5,6 +5,7 @@ import { useBalanceStore } from '../../store/balanceStore';
 import { Card } from '../Card';
 import { RulesButton } from '../RulesModal';
 import type { CasinoSide } from '../../types/casino';
+import { AppHeader } from '../AppHeader';
 
 // ─── Setup Screen ─────────────────────────────────────────────────────────────
 
@@ -18,23 +19,15 @@ function CasinoSetup({ onBack, onDeal }: { onBack: () => void; onDeal: (side: Ca
 
   return (
     <div className="h-dvh bg-slate-800 flex flex-col overflow-hidden">
-      <div className="flex-shrink-0 flex items-center justify-between px-4 py-3 border-b border-emerald-800/50">
-        <button onClick={onBack} className="text-white/60 hover:text-white text-sm underline">← Home</button>
-        <h1 className="text-white font-bold text-sm">Midnight Baseball</h1>
-        <div className='py-0.5 px-4 bg-slate-600 rounded-3xl border-[1px] border-slate-700'>
-        <span className="text-white text-s font-semibold">Balance: <span className='font-normal'>${balance.toLocaleString()}</span></span>
-        </div>
-      </div>
+      <AppHeader onHome={onBack} rulesTab="casino" />
       <div className="flex-1 min-h-0 flex items-center justify-center px-4 overflow-y-auto">
         <div className="bg-slate-800 rounded-2xl shadow-2xl p-5 w-full max-w-sm text-center">
-          <div className="text-4xl mb-2">⚾</div>
+          <div className="text-4xl mb-2 text-orange-600">⚪</div>
           <h2 className="text-xl font-bold text-white mb-1">Midnight Baseball</h2>
           <p className="text-slate-100 text-xs mb-1">Player vs Widow · Poker Game</p>
-          <div className="mb-4"><RulesButton defaultTab="casino" className="text-orange-400 hover:text-emerald-800 text-xs underline" /></div>
 
           {isBroke ? (
             <div className="py-4">
-              <div className="text-5xl mb-3">💸</div>
               <p className="text-slate-700 font-semibold text-lg mb-1">You're out of chips!</p>
               <p className="text-slate-500 text-sm mb-6">Reset your balance to $1,000 and play again.</p>
               <button onClick={resetCasino} className="w-full bg-emerald-600 text-white rounded-lg py-3 font-semibold hover:bg-emerald-500 transition">
@@ -43,7 +36,7 @@ function CasinoSetup({ onBack, onDeal }: { onBack: () => void; onDeal: (side: Ca
             </div>
           ) : (
             <>
-              <p className="text-xs font-semibold text-slate-200 uppercase tracking-wider mb-2">Choose your side</p>
+              <p className="text-sm font-semibold text-slate-200 uppercase tracking-wider my-4">Choose your side</p>
               <div className="flex gap-3 my-4">
                 {(['banker', 'player'] as CasinoSide[]).map(side => (
                   <button key={side} onClick={() => setSelectedSide(side)}
@@ -55,7 +48,7 @@ function CasinoSetup({ onBack, onDeal }: { onBack: () => void; onDeal: (side: Ca
                   </button>
                 ))}
               </div>
-              <p className="text-xs font-semibold text-slate-200 uppercase tracking-wider my-4">Choose your bet</p>
+              <p className="text-sm font-semibold text-slate-200 uppercase tracking-wider my-4">Choose your bet</p>
               <div className="grid grid-cols-3 gap-2 mb-3">
                 
                 {betOptions.map(bet => {
@@ -75,20 +68,20 @@ function CasinoSetup({ onBack, onDeal }: { onBack: () => void; onDeal: (side: Ca
               </div>
               {pendingBet && (
                 <div className="mt-6 bg-slate-700/40 rounded-xl p-3 text-left">
-                  <p className="text-sm font-semibold text-slate-200 mb-3 text-center">
+                  <p className="text-md font-semibold text-slate-200 mb-3 text-center">
                     You Choose
                   </p>
                   <p className="text-sm font-semibold text-slate-200 mb-3 text-center">
-                    <span className="text-orange-400">{selectedSide === 'banker' ? 'Widow' : 'Player'}</span> for <span className="text-slate-200">${pendingBet}</span>
+                    <span className="text-orange-500">{selectedSide === 'banker' ? 'Widow' : 'Player'}</span> for <span className="text-orange-500">${pendingBet}</span>
                   </p>
                   <div className="flex gap-2">
                     <button onClick={() => setPendingBet(null)}
-                      className="flex-1 py-2 rounded-lg text-slate-200 text-sm font-semibold hover:bg-orange-500 hover:text-slate-200 transition">
+                      className="flex-1 py-2 rounded-lg text-slate-200 text-md font-semibold hover:bg-orange-500 hover:text-slate-200 transition">
                       Cancel
                     </button>
                     <button onClick={() => onDeal(selectedSide!, pendingBet)}
-                      className="flex-1 py-2 rounded-lg bg-orange-600 text-white text-sm font-semibold hover:bg-orange-500 transition">
-                      Deal →
+                      className="flex-1 py-2 rounded-lg bg-orange-600 text-white text-md font-semibold hover:bg-orange-500 transition">
+                      Play Now
                     </button>
                   </div>
                 </div>
@@ -185,21 +178,20 @@ function PayOrSurrenderPrompt({ initialBet, totalWagered, balance, isWild, onPay
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
       <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm">
-        <div className="text-4xl text-center mb-3">{isWild ? '🃏' : '4️⃣'}</div>
         <h2 className="text-xl font-bold text-slate-800 text-center mb-1">{isWild ? 'Wild Card!' : 'Four Card!'}</h2>
         <p className="text-slate-500 text-sm text-center mb-1">
           {isWild
             ? <>A wild card appeared on your side.<br />Pay <strong>${initialBet}</strong> to continue, or surrender.</>
             : <>A 4 appeared on your side.<br />Pay <strong>${initialBet}</strong> to receive a bonus card, or surrender.</>}
         </p>
-        {!canAfford && <p className="text-red-500 text-xs text-center mb-3 font-medium">💸 Not enough chips — you must surrender.</p>}
+        {!canAfford && <p className="text-red-500 text-sm text-center mb-3 font-medium">Not enough chips — you must surrender.</p>}
         {canAfford && <div className="mb-4" />}
         <div className="flex gap-3">
-          <button onClick={onSurrender} className="flex-1 border border-red-200 text-red-600 rounded-lg py-2.5 text-sm font-semibold hover:bg-red-50 transition">
+          <button onClick={onSurrender} className="flex-1 border border-red-600 text-red-600 rounded-lg py-2.5 text-md font-semibold hover:bg-red-50 transition">
             Surrender = ${totalWagered}
           </button>
           <button onClick={onPay} disabled={!canAfford}
-            className="flex-1 bg-emerald-600 text-white rounded-lg py-2.5 text-sm font-semibold hover:bg-emerald-500 disabled:opacity-30 disabled:cursor-not-allowed transition">
+            className="flex-1 bg-orange-600 text-white rounded-lg py-2.5 text-sm font-semibold hover:bg-orange-500 disabled:opacity-30 disabled:cursor-not-allowed transition">
             Pay ${initialBet}
           </button>
         </div>
@@ -280,22 +272,11 @@ export function CasinoTable({ onBack }: { onBack: () => void }) {
     <div className="h-dvh bg-slate-900 flex flex-col overflow-hidden">
 
       {/* Header */}
-      <div className="flex-shrink-0 flex items-center justify-between px-3 py-2 border-b border-orange-800/50">
-        <div className="flex items-center gap-2">
-          <button onClick={onBack} className="text-white/60 hover:text-white text-sm underline">← Home</button>
-          <h1 className="text-white font-bold text-sm">Midnight Baseball</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          <RulesButton defaultTab="casino" />
-          <div className="py-0.5 px-4 bg-slate-600 rounded-3xl border-[1px] border-slate-700">
-          <span className="text-white text-s font-semibold">Balance: <span className="text-white">${balance.toLocaleString()}</span></span>
-          </div>
-        </div>
-      </div>
+      <AppHeader onHome={onBack} rulesTab="casino" />
 
       {/* Cards area */}
       <div className="flex-1 min-h-0 overflow-hidden px-2 py-1 flex flex-col items-center">
-        <div className="w-full max-w-sm flex flex-col gap-1.5 h-full">
+        <div className="w-full max-w-sm flex flex-col gap-1.5 h-full justify-center">
 
         {/* Info bar: current best hand + wager */}
         <div className="flex gap-1.5 flex-shrink-0 my-2">
