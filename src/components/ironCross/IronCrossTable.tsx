@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useIronCrossStore } from '../../store/IronCrossStore';
 import { useBalanceStore } from '../../store/balanceStore';
 import { Card } from '../Card';
-import { RulesButton, BonusPayoutsButton } from '../RulesModal';
+import { BonusPayoutsButton } from '../RulesModal';
 import { cardLabel } from '../../utils/deck';
 import type { RowChoice } from '../../types/ironCross';
 import { AppHeader } from '../AppHeader';
