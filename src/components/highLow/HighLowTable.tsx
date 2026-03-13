@@ -46,38 +46,19 @@ function multiplierLabel(m: number): string {
 type Phase = 'SETUP' | 'CHOOSING' | 'DEALING' | 'TRANSITIONING' | 'CASHOUT' | 'LOST' | 'WINNER';
 
 // ── Sounds ────────────────────────────────────────────────────────────────────
+// ── Sounds ────────────────────────────────────────────────────────────────────
+const dingAudio = new Audio('/sounds/ding.mp3');
+const buzzAudio = new Audio('/sounds/buzz.mp3');
+
 function playDing() {
-  const ctx = new AudioContext();
-  [987, 1975].forEach((freq, idx) => {
-    const osc = ctx.createOscillator(); const gain = ctx.createGain();
-    osc.connect(gain); gain.connect(ctx.destination);
-    osc.type = 'sine'; osc.frequency.setValueAtTime(freq, ctx.currentTime);
-    gain.gain.setValueAtTime(idx === 0 ? 0.5 : 0.25, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
-    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 1.2);
-  });
-  const click = ctx.createOscillator(); const cg = ctx.createGain();
-  click.connect(cg); cg.connect(ctx.destination); click.type = 'sine';
-  click.frequency.setValueAtTime(1400, ctx.currentTime);
-  cg.gain.setValueAtTime(0.6, ctx.currentTime);
-  cg.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
-  click.start(ctx.currentTime); click.stop(ctx.currentTime + 0.04);
+  dingAudio.currentTime = 0;
+  dingAudio.play().catch(() => {});
 }
 
 function playBuzz() {
-  const ctx = new AudioContext();
-  [{ freq:480,start:0,dur:0.18 },{ freq:360,start:0.18,dur:0.18 },{ freq:240,start:0.36,dur:0.28 }]
-    .forEach(({ freq, start, dur }) => {
-      const osc = ctx.createOscillator(); const gain = ctx.createGain();
-      osc.connect(gain); gain.connect(ctx.destination); osc.type = 'square';
-      osc.frequency.setValueAtTime(freq, ctx.currentTime + start);
-      gain.gain.setValueAtTime(0, ctx.currentTime + start);
-      gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + start + 0.01);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + start + dur);
-      osc.start(ctx.currentTime + start); osc.stop(ctx.currentTime + start + dur);
-    });
+  buzzAudio.currentTime = 0;
+  buzzAudio.play().catch(() => {});
 }
-
 // ── Confetti ──────────────────────────────────────────────────────────────────
 function Confetti() {
   const pieces = Array.from({ length: 80 }, (_, i) => ({
@@ -224,7 +205,6 @@ export function HighLowTable({ onBack }: { onBack: () => void }) {
   };
 
   const startGame = () => { const v = parseInt(betInput); if (!isNaN(v)) startGameWithBet(v); };
-
   // ── Confirm guess ─────────────────────────────────────────────────────────
   const confirmSelection = () => {
     if (!selection || !leftCard || deck.length === 0) return;
@@ -285,7 +265,7 @@ export function HighLowTable({ onBack }: { onBack: () => void }) {
   const cashoutAmount = Math.round(bet * MULTIPLIERS[streak]);
 
   return (
-    <div className="h-dvh flex flex-col overflow-hidden"
+    <div className="h-full flex flex-col overflow-hidden"
       style={{ background: 'linear-gradient(160deg, #0f172a 0%, #1e293b 60%, #0f172a 100%)' }}>
 
       {/* Header */}
@@ -367,7 +347,7 @@ export function HighLowTable({ onBack }: { onBack: () => void }) {
       </div>
 
       {/* Bottom sheet — fixed 200px */}
-      <div className="flex-shrink-0 border-t border-white/10 px-4"
+      <div className="flex-shrink-0 border-t align-center border-white/10 px-4"
         style={{ height:200, background:'rgba(15,23,42,0.95)', backdropFilter:'blur(12px)' }}>
         <div className="flex flex-col justify-center gap-2.5 mx-auto h-full"
           style={{ maxWidth:'clamp(280px, 100%, 90vw)' }}>

@@ -9,15 +9,17 @@ type GameMode = 'home' | 'casino' | 'ironCross' | 'highLow';
 export default function App() {
   const [mode, setMode] = useState<GameMode>('home');
 
-  if (mode === 'casino')    return <CasinoTable onBack={() => setMode('home')} />;
-  if (mode === 'ironCross') return <IronCrossTable onBack={() => setMode('home')} />;
-  if (mode === 'highLow')   return <HighLowTable onBack={() => setMode('home')} />;
+  if (mode === 'casino')    return <div className="fixed inset-0 bg-slate-800 overflow-hidden"><CasinoTable onBack={() => setMode('home')} /></div>;
+  if (mode === 'ironCross') return <div className="fixed inset-0 bg-slate-800 overflow-hidden"><IronCrossTable onBack={() => setMode('home')} /></div>;
+  if (mode === 'highLow')   return <div className="fixed inset-0 bg-slate-800 overflow-hidden"><HighLowTable onBack={() => setMode('home')} /></div>;
 
   return (
+    <div className="fixed inset-0 bg-slate-800 overflow-hidden">
     <HomeScreen
       onSelectCasino={() => setMode('casino')}
       onSelectIronCross={() => setMode('ironCross')}
       onSelectHighLow={() => setMode('highLow')}
     />
+    </div>
   );
 }

@@ -311,7 +311,7 @@ export function CasinoTable({ onBack }: { onBack: () => void }) {
       </div>
 
       {/* Bottom sheet — action bar */}
-      <div className="flex-shrink-0 bg-slate-700 rounded-t-2xl px-3 pt-3 pb-4 shadow-[0_-4px_24px_rgba(0,0,0,0.18)]">
+      <div className="flex-shrink-0 bg-slate-700 rounded-t-2xl px-3 align-center pt-3 pb-4 shadow-[0_-4px_24px_rgba(0,0,0,0.18)]">
         {(phase === 'PLAYING' || animating) && (
           <div className="flex items-center justify-between">
             <div className="text-sm text-slate-600">

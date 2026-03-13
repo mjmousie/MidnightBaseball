@@ -14,7 +14,7 @@ export function HomeScreen({ onSelectCasino, onSelectIronCross, onSelectHighLow 
 
       {/* Title block */}
       <div className="flex-shrink-0 flex flex-col items-center pt-8 pb-4 px-4">
-        <h1 className="text-xl font-black text-slate-100 tracking-tight">Choose Your "Skill" Game</h1>
+        <h1 className="text-xl font-black text-slate-100 tracking-tight">Pick Your "Skill" Game</h1>
         <p className="text-slate-500 text-xs mt-1">Good luck!</p>
       </div>
 

@@ -406,7 +406,7 @@ export function IronCrossTable({ onBack }: { onBack: () => void }) {
       </div>
 
       {/* Bottom sheet — action panel */}
-      <div className="flex-shrink-0 bg-slate-700 rounded-t-2xl px-3 pt-3 pb-4 max-h-[45vh] overflow-y-auto shadow-[0_-4px_24px_rgba(0,0,0,0.18)]">
+      <div className="flex-shrink-0 bg-slate-700 align-center rounded-t-2xl px-3 pt-3 pb-4 max-h-[45vh] overflow-y-auto shadow-[0_-4px_24px_rgba(0,0,0,0.18)]">
         <div className="flex flex-col gap-2">
 
           {/* ── DRAWING ── */}

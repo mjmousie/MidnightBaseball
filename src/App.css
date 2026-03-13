@@ -7,13 +7,16 @@
 
 
 html, body {
-  background-color: #1e293b;
-  margin: 0;
-  padding: 0;
+  overscroll-behavior: none;
+}
+
+html {
+  height: -webkit-fill-available;
 }
 
 body {
-  overscroll-behavior: none;
+  min-height: -webkit-fill-available;
+  background-color: #1e293b;
 }
 
 input[type='number']::-webkit-inner-spin-button,
