@@ -5,6 +5,17 @@
   text-align: center;
 }
 
+
+html, body {
+  background-color: #1e293b;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  overscroll-behavior: none;
+}
+
 input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;

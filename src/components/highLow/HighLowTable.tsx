@@ -378,7 +378,7 @@ export function HighLowTable({ onBack }: { onBack: () => void }) {
               <p className="text-white/40 text-[10px] text-center uppercase tracking-widest mb-1">Place Your Bet</p>
               <div className="relative">
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-orange-400 font-bold text-sm">$</span>
-                <input type="number" min={1} max={100} value={betInput}
+                <input type="text" inputMode='numeric' min={1} max={100} value={betInput}
                   onChange={e => setBetInput(e.target.value.replace(/[^0-9]/g, ''))}
                   placeholder="Enter amount (1–100)"
                   className="w-full bg-slate-800/80 border border-slate-600 focus:border-orange-500 rounded-xl pl-8 pr-4 py-3 text-white text-center font-bold text-base outline-none transition placeholder:text-white/20 placeholder:font-normal placeholder:text-sm appearance-none"
@@ -420,7 +420,7 @@ export function HighLowTable({ onBack }: { onBack: () => void }) {
                     initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0, y:4 }}
                     className="flex gap-2">
                     <button onClick={() => setSelection(null)}
-                      className="flex-1 py-2.5 rounded-full border border-orange-600 text-slate-200 text-md font-semibold hover:border-slate-500 transition">
+                      className="flex-1 py-2.5 rounded-full text-slate-200 text-md font-semibold hover:border-slate-500 transition">
                       Change
                     </button>
                     <button onClick={confirmSelection}
